@@ -8,9 +8,10 @@ using theMINIclassy.Data;
 namespace theMINIclassy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161208200246_tryagain")]
+    partial class tryagain
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -123,6 +124,28 @@ namespace theMINIclassy.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("theMINIclassy.Models.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApartmentNumber");
+
+                    b.Property<string>("City");
+
+                    b.Property<string>("State");
+
+                    b.Property<string>("StreetName");
+
+                    b.Property<string>("StreetNumber");
+
+                    b.Property<int>("ZipCode");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("theMINIclassy.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id");
@@ -170,6 +193,18 @@ namespace theMINIclassy.Data.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("theMINIclassy.Models.ClassType", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClassType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
