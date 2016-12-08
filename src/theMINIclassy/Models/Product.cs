@@ -10,7 +10,7 @@ namespace theMINIclassy.Models
     public class Product
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         public string SKU { get; set; }
 
