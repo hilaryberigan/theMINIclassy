@@ -10,7 +10,7 @@ namespace theMINIclassy.Models
     public class ProductQuantity
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }

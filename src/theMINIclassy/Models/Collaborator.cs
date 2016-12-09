@@ -9,7 +9,7 @@ namespace theMINIclassy.Models
     public class Collaborator
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
     }

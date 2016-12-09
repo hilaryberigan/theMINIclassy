@@ -55,11 +55,15 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ApartmentNumber,City,State,StreetName,StreetNumber,ZipCode")] Address address)
         {
+            if(address.ApartmentNumber == null)
+            {
+                address.ApartmentNumber = "";
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(address);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Create", "Customers");
             }
             return View(address);
         }

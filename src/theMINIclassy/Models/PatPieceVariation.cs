@@ -10,7 +10,7 @@ namespace theMINIclassy.Models
     public class PatPieceVariation
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Variation")]
         public int VariationId { get; set; }

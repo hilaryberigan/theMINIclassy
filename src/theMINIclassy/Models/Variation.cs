@@ -9,7 +9,7 @@ namespace theMINIclassy.Models
     public class Variation
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         public string Code { get; set; }
 

@@ -10,7 +10,7 @@ namespace theMINIclassy.Models
     public class Customer
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [Display(Name = "Email Address")]
         [DataType(DataType.EmailAddress)]

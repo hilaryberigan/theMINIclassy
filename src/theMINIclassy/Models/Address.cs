@@ -22,5 +22,14 @@ namespace theMINIclassy.Models
         public string State { get; set; }
 
         public int ZipCode { get; set; }
+
+        public string GetFullAddr
+        {
+           
+             get
+            {
+                return StreetNumber + " " + ApartmentNumber + " " + StreetName + ", " + City + ", " + State + " " + ZipCode;
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace theMINIclassy.WorkerClasses
     public class Supply
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         public string Title { get; set; }
 
@@ -16,7 +16,7 @@ namespace theMINIclassy.WorkerClasses
 
         public decimal Quantity { get; set; }
 
-        public DateTime LastUpdated { get; set; } = DateTime.Now;
+        public DateTime LastUpdated { get; set; }
 
         public int MinThreshold { get; set; }
     }

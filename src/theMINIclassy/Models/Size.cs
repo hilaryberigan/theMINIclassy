@@ -9,7 +9,7 @@ namespace theMINIclassy.Models
     public class Size
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         public string ItemSize { get; set; }
 

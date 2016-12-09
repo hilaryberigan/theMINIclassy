@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using theMINIclassy.Models.ManageViewModels;
 
 namespace theMINIclassy.Controllers
 {
@@ -46,9 +47,14 @@ namespace theMINIclassy.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id");
-            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id");
-            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id");
+            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Title");
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title");
+            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Title");
+            var model = new ProductViewModel
+            {
+                Product = new Product(),
+                Collections = _context.Collection.ToList()
+            };
             return View();
         }
 

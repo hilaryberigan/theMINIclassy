@@ -11,7 +11,7 @@ namespace theMINIclassy.Models
     {
 
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Product")]
         public int ProductId { get; set; }
