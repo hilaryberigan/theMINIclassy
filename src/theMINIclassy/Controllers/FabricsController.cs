@@ -88,6 +88,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
         {
+            fabric.LastUpdated = DateTime.Now;
             if (id != fabric.Id)
             {
                 return NotFound();

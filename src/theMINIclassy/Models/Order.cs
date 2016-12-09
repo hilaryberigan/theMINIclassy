@@ -12,7 +12,7 @@ namespace theMINIclassy.Models
         [Key]
         public int Id { get; set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime OrderDate { get; set; }
 
         public int OrderNumber { get; set; }
 

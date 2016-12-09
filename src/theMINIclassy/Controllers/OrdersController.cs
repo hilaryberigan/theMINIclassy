@@ -57,6 +57,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CustomerId,OrderDate,OrderNumber,OrderStatus,OriginatedFrom")] Order order)
         {
+            order.OrderDate = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(order);
