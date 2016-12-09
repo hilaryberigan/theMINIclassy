@@ -11,12 +11,14 @@ using Microsoft.Extensions.Logging;
 using theMINIclassy.Models;
 using theMINIclassy.Models.AccountViewModels;
 using theMINIclassy.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace theMINIclassy.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -88,11 +90,22 @@ namespace theMINIclassy.Controllers
         //
         // GET: /Account/Register
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (HttpContext.User.IsInRole("Admin"))
+            {
+                var userRoles = _roleManager.Roles.OrderBy(c => c.Name).Select(x => new { Id = x.Id, Value = x.Name });
+                var model = new RegisterViewModel();
+                model.UserRoles = new SelectList(userRoles.Where(x => !x.Value.Contains("Admin")).ToList(), "Id", "Value");
+                ViewData["ReturnUrl"] = returnUrl;
+                return View(model);
+            }
+            else
+            {
+                return RedirectToAction("Login");
+            }
         }
 
         //
@@ -114,8 +127,7 @@ namespace theMINIclassy.Controllers
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");  
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
                 }

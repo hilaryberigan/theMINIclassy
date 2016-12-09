@@ -92,6 +92,7 @@ namespace theMINIclassy
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            RolesData.CreateRolesAndUsers(app.ApplicationServices).Wait();
         }
     }
 }
