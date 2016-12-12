@@ -50,12 +50,20 @@ namespace theMINIclassy.Controllers
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Title");
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title");
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Title");
+            ViewData["ProductFabricQuantity"] = new SelectList(_context.Fabric, "Id", "Title");
+            List<Fabric> allFabs = new List<Fabric>();
+            foreach (var item in _context.Fabric)
+            {
+
+                allFabs.Add(item);
+            }
             var model = new ProductViewModel
             {
                 Product = new Product(),
-                Collections = _context.Collection.ToList()
+                Collections = _context.Collection.ToList(),
+                Fabrics = allFabs
             };
-            return View();
+            return View(model);
         }
 
         // POST: Products/Create
@@ -63,12 +71,18 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity)
         {
+            
             if (ModelState.IsValid)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+                int saveId = product.Id;
+                for (int i = 0; i < FabricsQuantity; i++)
+                {
+                    return RedirectToAction("create", "ProductFabricQuantities", new { id = product.Id });
+                }
                 return RedirectToAction("Index");
             }
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
@@ -76,7 +90,6 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
-
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

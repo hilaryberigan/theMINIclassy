@@ -32,5 +32,7 @@ namespace theMINIclassy.Models.ManageViewModels
         public List<Variation> Variations { get; set; }
 
         public Collection Collection { get; set; }
+
+        public int FabricsQuantity { get; set; }
     }
 }
