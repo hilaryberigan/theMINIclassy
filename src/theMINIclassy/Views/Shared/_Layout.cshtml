@@ -29,11 +29,16 @@
                 </button>
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">theMINIclassy</a>
             </div>
+            
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Addresses" asp-action="Index">Address</a></li>
                     <li><a asp-area="" asp-controller="Products" asp-action="Index">Product</a></li>
                     <li><a asp-area="" asp-controller="Orders" asp-action="Index">Order</a></li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>  
+                    }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
