@@ -40,8 +40,17 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
-
-            return View(product);
+            List<ProductFabricQuantity> PFQ = new List<ProductFabricQuantity>();
+            foreach(var item in _context.ProductFabricQuantity)
+            {
+                PFQ.Add(item);
+            }
+            var model = new ProductViewModel
+            {
+                Product = product,
+                PFQuantities = PFQ
+            };
+            return View(model);
         }
 
         // GET: Products/Create

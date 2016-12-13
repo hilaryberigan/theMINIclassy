@@ -26,12 +26,14 @@ namespace theMINIclassy.Controllers
         private readonly ILogger _logger;
 
         public AccountController(
+            RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -96,7 +98,7 @@ namespace theMINIclassy.Controllers
         {
             if (HttpContext.User.IsInRole("Admin"))
             {
-                var userRoles = _roleManager.Roles.OrderBy(c => c.Name).Select(x => new { Id = x.Id, Value = x.Name });
+                var userRoles = _roleManager.Roles.OrderBy(r => r.Name).Select(x => new { Id = x.Id, Value = x.Name });
                 var model = new RegisterViewModel();
                 model.UserRoles = new SelectList(userRoles.Where(x => !x.Value.Contains("Admin")).ToList(), "Id", "Value");
                 ViewData["ReturnUrl"] = returnUrl;
@@ -120,6 +122,16 @@ namespace theMINIclassy.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
+                string employee = "7ebbdbd2-1809-47ba-816e-a54ee718a0a9";
+                string manager = "3a44d84b-25f9-41fd-b2de-587f28f978ea";
+                if(model.UserRole.ToString() == employee)
+                {
+                    var role = await _userManager.AddToRoleAsync(user, "Employee");
+                }else if(model.UserRole.ToString() == manager)
+                {
+                    var role = await _userManager.AddToRoleAsync(user, "Manager");
+                }
+                
                 if (result.Succeeded)
                 {
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
@@ -129,6 +141,7 @@ namespace theMINIclassy.Controllers
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");  
                     _logger.LogInformation(3, "User created a new account with password.");
+                    
                     return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);

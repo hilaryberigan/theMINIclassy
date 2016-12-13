@@ -44,10 +44,10 @@ namespace theMINIclassy.Controllers
         }
 
         // GET: ProductFabricQuantities/Create
-        public IActionResult Create(int? productId)
+        public IActionResult Create(int? id)
         {
             ViewData["FabricId"] = new SelectList(_context.Fabric, "Id", "Title");
-            ViewData["ProductId"] = productId;
+            ViewData["ProductId"] = id;
             return View();
         }
 
@@ -58,11 +58,19 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FabricId,ProductId,QtyFabricOnProduct")] ProductFabricQuantity productFabricQuantity)
         {
+            var x = productFabricQuantity.Id;
+            productFabricQuantity.ProductId = x;
+            productFabricQuantity.Id = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(productFabricQuantity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
+            }else
+            {
+                _context.Add(productFabricQuantity);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", "Products", new { id = productFabricQuantity.ProductId });
             }
             ViewData["FabricId"] = new SelectList(_context.Fabric, "Id", "Id", productFabricQuantity.FabricId);
             ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productFabricQuantity.ProductId);
