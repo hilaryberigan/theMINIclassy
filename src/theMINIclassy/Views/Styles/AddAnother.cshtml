@@ -1,0 +1,14 @@
+@model theMINIclassy.Models.PatPieceStyle
+
+<div>
+    <h4>PatPieceStyle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+    </dl>
+</div>
+<div>
+Would you like to add another pattern piece to this style?
+    <a asp-action="Create" asp-route-id="@Model.Style.Id">Yes, Add Another PatternPiece</a> |
+    <a asp-controller="Styles" asp-action="Edit" asp-route-id="@Model.Style.Id">No, Finish Updating Style</a> 
+
+</div>

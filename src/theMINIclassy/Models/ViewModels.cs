@@ -32,4 +32,20 @@ namespace theMINIclassy.Models
 
     }
 
+    public class SupplyViewModel
+    {
+        public List<SupplyObj> Supplies { get; set; }
+    }
+
+    public class SupplyObj
+
+    {
+        public string Title { get; set; }
+        public int Id { get; set; }
+        public decimal Quantity { get; set; }
+        public string Type { get; set; }
+        public string Measure { get; set; }
+    }
+
+
 }
