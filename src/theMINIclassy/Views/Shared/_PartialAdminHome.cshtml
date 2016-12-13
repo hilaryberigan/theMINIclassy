@@ -1,79 +1,107 @@
 ﻿<h3>INVENTORIES</h3>
-<ul>
-    <li>
-        <a asp-area="" asp-controller="Products" asp-action="Index">Product</a>
-        <a asp-controller="Products" asp-action="Index">View/Change |</a>
-        <a asp-controller="Products" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Labels" asp-action="Index">Labels</a>
-        <a asp-controller="Labels" asp-action="Index">View/Change |</a>
-        <a asp-controller="Labels" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Tags" asp-action="Index">Tags</a>
-        <a asp-controller="Tags" asp-action="Index">View/Change |</a>
-        <a asp-controller="Tags" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Fabrics" asp-action="Index">Fabrics</a>
-        <a asp-controller="Fabrics" asp-action="Index">View/Change |</a>
-        <a asp-controller="Fabrics" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Notions" asp-action="Index">Notions</a>
-        <a asp-controller="Notions" asp-action="Index">View/Change |</a>
-        <a asp-controller="Notions" asp-action="Create">Add</a>
-    </li>
-</ul>
-<h3>ORDERS</h3>
-<ul>
-    <li>
-        <a asp-area="" asp-controller="Orders" asp-action="Index">Order</a>
-        <a asp-controller="Orders" asp-action="Index">View/Change |</a>
-        <a asp-controller="Orders" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
-        <a asp-controller="Customers" asp-action="Index">View/Change |</a>
-        <a asp-controller="Customers" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Addresses" asp-action="Index">Addresses</a>
-        <a asp-controller="Addresses" asp-action="Index">View/Change |</a>
-        <a asp-controller="Addresses" asp-action="Create">Add</a>
-    </li>
-</ul>
-<h3>CATEGORIES</h3>
-<ul>
-    <li>
-        <a asp-area="" asp-controller="Collaborators" asp-action="Index">Collaborators</a>
-        <a asp-controller="Collaborators" asp-action="Index">View/Change |</a>
-        <a asp-controller="Collaborators" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Collections" asp-action="Index">Collections</a>
-        <a asp-controller="Collections" asp-action="Index">View/Change |</a>
-        <a asp-controller="Collections" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Seasons" asp-action="Index">Seasons</a>
-        <a asp-controller="Seasons" asp-action="Index">View/Change |</a>
-        <a asp-controller="Seasons" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="PatternPieces" asp-action="Index">Pattern Pieces</a>
-        <a asp-controller="PatternPieces" asp-action="Index">View/Change |</a>
-        <a asp-controller="PatternPieces" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Variations" asp-action="Index">Variations</a>
-        <a asp-controller="Variations" asp-action="Index">View/Change |</a>
-        <a asp-controller="Variations" asp-action="Create">Add</a>
-    </li>
-    <li>
-        <a asp-area="" asp-controller="Styles" asp-action="Index">Styles</a>
-        <a asp-controller="Styles" asp-action="Index">View/Change |</a>
-        <a asp-controller="Styles" asp-action="Create">Add</a>
-    </li>
-</ul>
+<table border="0" width="75%" cellpadding="4" cellspacing="3">
+
+<tr>
+        <td><a asp-area="" asp-controller="Products" asp-action="Index">Product</a></td>
+    <td><a asp-controller="Products" asp-action="Index">View/Change |</a>
+    <a asp-controller="Products" asp-action="Create">Add</a></td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Labels" asp-action="Index">Labels</a></td>
+        <td>
+            <a asp-controller="Labels" asp-action="Index">View/Change |</a>
+            <a asp-controller="Labels" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Tags" asp-action="Index">Tags</a></td>
+        <td>
+            <a asp-controller="Tags" asp-action="Index">View/Change |</a>
+            <a asp-controller="Tags" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Fabrics" asp-action="Index">Fabrics</a></td>
+        <td>
+            <a asp-controller="Fabrics" asp-action="Index">View/Change |</a>
+            <a asp-controller="Fabrics" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Notions" asp-action="Index">Notions</a></td>
+        <td>
+            <a asp-controller="Notions" asp-action="Index">View/Change |</a>
+            <a asp-controller="Notions" asp-action="Create">Add</a>
+        </td>
+    </tr>
+</table>
+    <h3>ORDERS</h3>
+<table border="0" width="60%" cellpadding="4" cellspacing="3">
+    <tr>
+        <td><a asp-area="" asp-controller="Orders" asp-action="Index">Order</a></td>
+        <td>
+            <a asp-controller="Orders" asp-action="Index">View/Change |</a>
+            <a asp-controller="Orders" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a></td>
+        <td>
+            <a asp-controller="Customers" asp-action="Index">View/Change |</a>
+            <a asp-controller="Customers" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Addresses" asp-action="Index">Addresses</a></td>
+        <td>
+            <a asp-controller="Addresses" asp-action="Index">View/Change |</a>
+            <a asp-controller="Addresses" asp-action="Create">Add</a>
+        </td>
+    </tr> 
+</table>
+    <h3>CATEGORIES</h3>
+<table border="0" width="50%" cellpadding="4" cellspacing="3">
+    <tr>
+        <td><a asp-area="" asp-controller="Collaborators" asp-action="Index">Collaborators</a></td>
+        <td>
+            <a asp-controller="Collaborators" asp-action="Index">View/Change |</a>
+            <a asp-controller="Collaborators" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Collections" asp-action="Index">Collections</a></td>
+        <td>
+            <a asp-controller="Collections" asp-action="Index">View/Change |</a>
+            <a asp-controller="Collections" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Seasons" asp-action="Index">Seasons</a></td>
+        <td>
+            <a asp-controller="Seasons" asp-action="Index">View/Change |</a>
+            <a asp-controller="Seasons" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="PatternPieces" asp-action="Index">Pattern Pieces</a></td>
+        <td>
+            <a asp-controller="PatternPieces" asp-action="Index">View/Change |</a>
+            <a asp-controller="PatternPieces" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Variations" asp-action="Index">Variations</a></td>
+        <td>
+            <a asp-controller="Variations" asp-action="Index">View/Change |</a>
+            <a asp-controller="Variations" asp-action="Create">Add</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Styles" asp-action="Index">Styles</a></td>
+        <td>
+            <a asp-controller="Styles" asp-action="Index">View/Change |</a>
+            <a asp-controller="Styles" asp-action="Create">Add</a>
+        </td>
+    </tr>  
+</table>
+
