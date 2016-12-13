@@ -41,11 +41,23 @@ namespace theMINIclassy.Controllers
 
             return View(style);
         }
-
         // GET: Styles/Create
         public IActionResult Create()
         {
+        
             return View();
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> AddPatternPieceToStyle([Bind("Id,Code,Title")] Style style)
+        {
+           if (ModelState.IsValid)
+            {
+                _context.Add(style);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Create", "PatPieceStyles", new { Id = style.Id });
+            }
+            return RedirectToAction("Create");
         }
 
         // POST: Styles/Create
@@ -54,6 +66,7 @@ namespace theMINIclassy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Code,Title")] Style style)
+
         {
             if (ModelState.IsValid)
             {
@@ -62,6 +75,7 @@ namespace theMINIclassy.Controllers
                 return RedirectToAction("Index");
             }
             return View(style);
+
         }
 
         // GET: Styles/Edit/5

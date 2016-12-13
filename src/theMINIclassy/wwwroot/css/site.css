@@ -48,3 +48,31 @@ textarea {
     display: none
   }
 }
+
+.navbar-inverse {
+    background-color: white;
+    margin-left: 2vw;
+    margin-right: 2vw;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: black;
+}
+
+.navbar-inverse .navbar-brand {
+    color: black;
+}
+.navbar-inverse .navbar-brand:hover {
+    color: hotpink;
+}
+.navbar-inverse .navbar-nav > li > a:hover {
+    color: darkturquoise;
+}
+
+.navbar-inverse .btn-link {
+    color: black;
+}
+
+.navbar-inverse .btn-link:hover{
+    color: darkturquoise;
+}

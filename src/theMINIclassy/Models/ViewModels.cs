@@ -20,4 +20,16 @@ namespace theMINIclassy.Models
 
         public IEnumerable<string> Products { get; set; }
     }
+    public class StyleViewModel
+    {
+        public Style Style { get; set; }
+
+        public List<PatPieceStyle> ShowPatPieces { get; set; }
+
+        public List<PatternPiece> SelectedPatPieces { get; set; }
+
+        public PatternPiece PatPiece { get; set; }
+
+    }
+
 }

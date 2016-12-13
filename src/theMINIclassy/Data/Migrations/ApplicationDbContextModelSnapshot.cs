@@ -196,7 +196,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.ClassType", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Title");
@@ -208,7 +208,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Collaborator", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
@@ -220,7 +220,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Collection", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
@@ -244,7 +244,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Customer", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("AddressId");
@@ -264,7 +264,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Fabric", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
@@ -288,7 +288,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Label", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
@@ -308,7 +308,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Notion", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
@@ -328,7 +328,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Order", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("CustomerId");
@@ -350,7 +350,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.PatPieceStyle", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("PatPieceId");
@@ -368,7 +368,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.PatPieceVariation", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("PatPieceId");
@@ -386,7 +386,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.PatternPiece", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Title");
@@ -398,7 +398,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Product", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("CollectionId");
@@ -434,7 +434,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.ProductFabricQuantity", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("FabricId");
@@ -454,7 +454,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.ProductLabelQuantity", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("LabelId");
@@ -474,7 +474,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.ProductNotionQuantity", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("NotionId");
@@ -494,7 +494,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.ProductQuantity", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("OrderId");
@@ -514,7 +514,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.ProductTagQuantity", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("ProductId");
@@ -534,7 +534,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Season", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Title");
@@ -546,7 +546,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Size", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
@@ -560,7 +560,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Style", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
@@ -574,7 +574,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Tag", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
@@ -594,7 +594,7 @@ namespace theMINIclassy.Data.Migrations
 
             modelBuilder.Entity("theMINIclassy.Models.Variation", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Code");
