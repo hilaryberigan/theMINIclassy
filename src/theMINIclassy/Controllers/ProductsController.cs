@@ -45,10 +45,52 @@ namespace theMINIclassy.Controllers
             {
                 PFQ.Add(item);
             }
+            List<ProductNotionQuantity> PNQ = new List<ProductNotionQuantity>();
+            foreach(var item in _context.ProductNotionQuantity)
+            {
+                PNQ.Add(item);
+            }
+            List<ProductLabelQuantity> PLQ = new List<ProductLabelQuantity>();
+            foreach(var item in _context.ProductLabelQuantity)
+            {
+                PLQ.Add(item);
+            }
+            List<ProductTagQuantity> PTQ = new List<ProductTagQuantity>();
+            foreach(var item in _context.ProductTagQuantity)
+            {
+                PTQ.Add(item);
+            }
+            List<Fabric> allFab = new List<Fabric>();
+            foreach(var item in _context.Fabric)
+            {
+                allFab.Add(item);
+            }
+            List<Notion> allNot = new List<Notion>();
+            foreach(var item in _context.Notion)
+            {
+                allNot.Add(item);
+            }
+            List<Tag> allTag = new List<Tag>();
+            foreach(var item in _context.Tag)
+            {
+                allTag.Add(item);
+            }
+            List<Label> allLab = new List<Label>();
+            foreach(var item in _context.Label)
+            {
+                allLab.Add(item);
+            }
             var model = new ProductViewModel
             {
                 Product = product,
-                PFQuantities = PFQ
+                PFQuantities = PFQ,
+                PNQuantities = PNQ,
+                PLQuantities = PLQ,
+                PTQuantities = PTQ,
+                Fabrics = allFab,
+                Notions = allNot,
+                Tags = allTag,
+                Labels = allLab
             };
             return View(model);
         }
@@ -66,11 +108,17 @@ namespace theMINIclassy.Controllers
 
                 allFabs.Add(item);
             }
+            List<Notion> allNots = new List<Notion>();
+            foreach(var item in _context.Notion)
+            {
+                allNots.Add(item);
+            }
             var model = new ProductViewModel
             {
                 Product = new Product(),
                 Collections = _context.Collection.ToList(),
-                Fabrics = allFabs
+                Fabrics = allFabs,
+                Notions = allNots
             };
             return View(model);
         }
