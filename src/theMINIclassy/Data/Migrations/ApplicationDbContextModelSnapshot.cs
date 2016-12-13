@@ -409,7 +409,7 @@ namespace theMINIclassy.Data.Migrations
 
                     b.Property<decimal>("MinThreshold");
 
-                    b.Property<string>("Quantity");
+                    b.Property<int>("Quantity");
 
                     b.Property<string>("SKU");
 

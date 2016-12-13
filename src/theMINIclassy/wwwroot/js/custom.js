@@ -18,7 +18,7 @@ function addFabric() {
 
 function GetTitle(id, list) {
     for (var item in list) {
-        if (item.Id == id) {
+        if (item.Id === id) {
             return item;
         }
     }

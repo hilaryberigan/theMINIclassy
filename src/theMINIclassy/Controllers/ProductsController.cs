@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using theMINIclassy.Models.ManageViewModels;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace theMINIclassy.Controllers
 {
@@ -15,9 +18,12 @@ namespace theMINIclassy.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
+        private IHostingEnvironment _environment;
+
+        public ProductsController(ApplicationDbContext context, IHostingEnvironment environment)
         {
-            _context = context;    
+            _context = context;
+            _environment = environment;
         }
 
         // GET: Products
@@ -128,19 +134,45 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity)
+        public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity, ICollection<IFormFile> files)
         {
             product.Quantity = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(product);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var images = Path.Combine(_environment.WebRootPath, "images");
+                int count = 0;
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        if (count == 0)
+                        {
+
+                            using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                            uploads += "\\" + file.FileName;
+                            count++;
+                        }
+                        else
+                        {
+                            using (var fileStream = new FileStream(Path.Combine(images, file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                            images += "\\" + file.FileName;
+                        }
+                    }
+                }
+
+                product.TechPackPath = uploads;
+                product.ImagePath = images;
                 await _context.SaveChangesAsync();
                 int saveId = product.Id;
-                for (int i = 0; i < FabricsQuantity; i++)
-                {
-                    return RedirectToAction("create", "ProductFabricQuantities", new { id = product.Id });
-                }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","Products", new { id = product.Id });
             }
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);
