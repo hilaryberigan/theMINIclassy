@@ -12,16 +12,19 @@ namespace theMINIclassy.Models
         [Key]
         public int Id { get; set; }
 
+        [Display(Name = "Product")]
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
         public Product Product { get; set; }
 
+        [Display(Name = "Notion")]
         [ForeignKey("Notion")]
         public int NotionId { get; set; }
 
         public Notion Notion { get; set; }
 
+        [Display(Name = "Qty Notion on Product")]
         public int QtyNotionOnProduct { get; set; }
 
     }
