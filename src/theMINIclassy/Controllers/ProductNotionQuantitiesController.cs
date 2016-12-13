@@ -155,9 +155,10 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productNotionQuantity = await _context.ProductNotionQuantity.SingleOrDefaultAsync(m => m.Id == id);
+            var productId = productNotionQuantity.ProductId;
             _context.ProductNotionQuantity.Remove(productNotionQuantity);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Products", new { id = productId });
         }
 
         private bool ProductNotionQuantityExists(int id)

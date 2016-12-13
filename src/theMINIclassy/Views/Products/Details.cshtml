@@ -63,7 +63,7 @@
                     {
                         if (x.Id == item.FabricId)
                         {
-                            <dd>@item.QtyFabricOnProduct <strong>yards of</strong> @x.Title | <a asp-controller="ProductFabricQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a></dd>
+                            <dd>@item.QtyFabricOnProduct <strong>yards of</strong> @x.Title | <a asp-controller="ProductFabricQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductFabricQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
                         }
                     }
                 }
@@ -80,7 +80,7 @@
                     {
                         if (x.Id == item.NotionId)
                         {
-                            <dd>@item.QtyNotionOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductNotionQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a></dd>
+                            <dd>@item.QtyNotionOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductNotionQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductNotionQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
                         }
                     }
                 }
@@ -98,7 +98,7 @@
                     {
                         if (x.Id == item.LabelId)
                         {
-                            <dd>@item.QtyLabelOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductLabelQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a></dd>
+                            <dd>@item.QtyLabelOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductLabelQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductLabelQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
                         }
                     }
                 }
@@ -115,7 +115,7 @@
                     {
                         if (x.Id == item.TagId)
                         {
-                            <dd>@item.QtyTagOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductTagQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a></dd>
+                            <dd>@item.QtyTagOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductTagQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductTagQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
                         }
                     }
                 }
@@ -123,7 +123,9 @@
         }
     </dl>
 </div>
-
+<br />
+<br />
+<br />
 <div>
     <a asp-controller="ProductFabricQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h5>ADD FABRIC & QUANTITY</h5></a>
     <a asp-controller="ProductNotionQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h5>ADD NOTION & QUANTITY</h5></a>

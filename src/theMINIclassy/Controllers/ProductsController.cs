@@ -130,7 +130,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity)
         {
-            
+            product.Quantity = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(product);
