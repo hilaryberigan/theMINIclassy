@@ -11,16 +11,20 @@ namespace theMINIclassy.Models
         [Key]
         public int Id { get; set; }
 
+        [Display(Name ="Street Number")]
         public string StreetNumber { get; set; }
 
+        [Display(Name = "Street Name")]
         public string StreetName { get; set; }
 
+        [Display(Name = "Apartment Number")]
         public string ApartmentNumber { get; set; }
 
         public string City { get; set; }
 
         public string State { get; set; }
 
+        [Display(Name = "Zip Code")]
         public int ZipCode { get; set; }
 
         public string GetFullAddr

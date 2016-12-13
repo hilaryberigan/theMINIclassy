@@ -12,11 +12,13 @@ namespace theMINIclassy.Models
         [Key]
         public int Id { get; set; }
 
+        [Display(Name = "Style")]
         [ForeignKey("Style")]
         public int StyleId { get; set; }
 
         public Style Style { get; set; }
 
+        [Display(Name = "Pattern Piece")]
         [ForeignKey("PatternPiece")]
         public int PatPieceId { get; set; }
 

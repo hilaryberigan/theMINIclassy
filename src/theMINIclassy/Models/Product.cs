@@ -18,24 +18,30 @@ namespace theMINIclassy.Models
 
         public string Description { get; set; }
 
+        [Display(Name = "Image Path")]
         public string ImagePath { get; set; }
 
+        [Display(Name = "Tech Pack Path")]
         public string TechPackPath { get; set; }
 
         public string Quantity { get; set; }
 
+        [Display(Name = "Minimum Threshold")]
         public decimal MinThreshold { get; set; }
 
+        [Display(Name = "Collection")]
         [ForeignKey("Collection")]
         public int CollectionId { get; set; }
 
         public Collection Collection { get; set; }
 
+        [Display(Name = "Style")]
         [ForeignKey("Style")]
         public int StyleId { get; set; }
 
         public Style Style { get; set; }
 
+        [Display(Name = "Variation")]
         [ForeignKey("Variation")]
         public int VariationId { get; set; }
 
