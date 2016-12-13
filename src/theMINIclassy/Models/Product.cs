@@ -24,7 +24,7 @@ namespace theMINIclassy.Models
         [Display(Name = "Tech Pack Path")]
         public string TechPackPath { get; set; }
 
-        public string Quantity { get; set; }
+        public int Quantity { get; set; }
 
         [Display(Name = "Minimum Threshold")]
         public decimal MinThreshold { get; set; }
