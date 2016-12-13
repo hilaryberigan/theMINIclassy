@@ -1,4 +1,4 @@
-@model theMINIclassy.Models.Product
+@model theMINIclassy.Models.ManageViewModels.ProductViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,53 +11,74 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Product.Description)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.Product.Description)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ImagePath)
+            @Html.DisplayNameFor(model => model.Product.ImagePath)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ImagePath)
+            @Html.DisplayFor(model => model.Product.ImagePath)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.MinThreshold)
+            @Html.DisplayNameFor(model => model.Product.MinThreshold)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.MinThreshold)
+            @Html.DisplayFor(model => model.Product.MinThreshold)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Quantity)
+            @Html.DisplayNameFor(model => model.Product.Quantity)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Quantity)
+            @Html.DisplayFor(model => model.Product.Quantity)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.SKU)
+            @Html.DisplayNameFor(model => model.Product.SKU)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.SKU)
+            @Html.DisplayFor(model => model.Product.SKU)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.TechPackPath)
+            @Html.DisplayNameFor(model => model.Product.TechPackPath)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.TechPackPath)
+            @Html.DisplayFor(model => model.Product.TechPackPath)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Product.Title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Product.Title)
         </dd>
     </dl>
+</div>
+<div class="PFList">
+    @foreach (var item in Model.PFQuantities)
+    {
+        if (item.ProductId == Model.Product.Id)
+        {
+            <div>
+            <dl>
+                <dt><h5>Fabric ID:</h5></dt>
+                <dd>@item.FabricId           </dd>
+                <dt><h5>FABRIC QUANTITY</h5></dt>
+                <dd>@item.QtyFabricOnProduct</dd>
+            </dl>
+            </div>
+        }
+
+    }
+</div>
+<div>
+    <a asp-controller="ProductFabricQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h3>ADD FABRIC & QUANTITY</h3></a>
+    <a asp-controller="ProductFabricQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h3>ADD FABRIC & QUANTITY</h3></a>
 </div>
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit |</a>
+        <a asp-action="Edit" asp-route-id="@Model.Product.Id">Edit |</a>
     }
     <a asp-action="Index">Back to List</a>
 </div>

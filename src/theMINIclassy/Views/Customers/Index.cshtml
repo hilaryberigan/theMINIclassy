@@ -7,10 +7,14 @@
 <h2>Index</h2>
 
 <p>
+<<<<<<< HEAD
+    <a asp-controller="Customers" asp-action="Create">Create New</a>
+=======
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
         <a asp-controller="Addresses" asp-action="Create">Create New</a>
     }
+>>>>>>> 68ab8dcd2d4a0e52dd14c3e9c021fb4f0c239e4a
 </p>
 <table class="table">
     <thead>
