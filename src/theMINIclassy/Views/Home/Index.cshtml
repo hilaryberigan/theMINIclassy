@@ -2,19 +2,11 @@
     ViewData["Title"] = "Home Page";
 }
 <br />
-<ul>
-    <li><a asp-area="" asp-controller="Products" asp-action="Index">Product</a></li>
-    <li><a asp-area="" asp-controller="Orders" asp-action="Index">Order</a></li>
-    <li><a asp-area="" asp-controller="Collaborators" asp-action="Index">Collaborators</a></li>
-    <li><a asp-area="" asp-controller="Collections" asp-action="Index">Collections</a></li>
-    <li><a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a></li>
-    <li><a asp-area="" asp-controller="Addresses" asp-action="Index">Addresses</a></li>
-    <li><a asp-area="" asp-controller="Seasons" asp-action="Index">Seasons</a></li>
-    <li><a asp-area="" asp-controller="Fabrics" asp-action="Index">Fabrics</a></li>
-    <li><a asp-area="" asp-controller="Notions" asp-action="Index">Notions</a></li>
-    <li><a asp-area="" asp-controller="PatternPieces" asp-action="Index">Pattern Pieces</a></li>
-    <li><a asp-area="" asp-controller="Labels" asp-action="Index">Labels</a></li>
-    <li><a asp-area="" asp-controller="Tags" asp-action="Index">Tags</a></li>
-    <li><a asp-area="" asp-controller="Variations" asp-action="Index">Variations</a></li>
-    <li><a asp-area="" asp-controller="Styles" asp-action="Index">Styles</a></li>
-</ul>
+
+@if(User.IsInRole("Admin"))
+{
+    @await Html.PartialAsync("_PartialAdminHome");
+} else 
+{
+    @await Html.PartialAsync("_PartialManagerEmployeeHome");
+}

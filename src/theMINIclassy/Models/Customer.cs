@@ -18,6 +18,7 @@ namespace theMINIclassy.Models
 
         public string Name { get; set; }
 
+        [Display(Name = "Address")]
         [ForeignKey("Address")]
         public int AddressId { get; set; }
 

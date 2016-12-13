@@ -1,0 +1,23 @@
+@model theMINIclassy.Models.StyleViewModel
+
+<form asp-action="_PartialAddPatPiece">
+    <div class="form-horizontal">
+        <h4>Style</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <div id="AddPattern">
+                <label class="col-md-2 control-label">Pattern Piece</label>
+                <div class="col-md-10">
+                <select asp-for="PatPiece.Title" class="form-control" asp-items="ViewBag.SelectPatPiece">
+                </select>
+                </div>
+            </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Add to Style" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>

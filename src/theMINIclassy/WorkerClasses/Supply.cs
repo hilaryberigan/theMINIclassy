@@ -16,8 +16,10 @@ namespace theMINIclassy.WorkerClasses
 
         public decimal Quantity { get; set; }
 
+        [Display(Name = "Last Updated")]
         public DateTime LastUpdated { get; set; }
 
+        [Display(Name = "Minimum Threshold")]
         public int MinThreshold { get; set; }
     }
 }

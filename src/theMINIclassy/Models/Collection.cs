@@ -18,11 +18,13 @@ namespace theMINIclassy.Models
 
         public string Code { get; set; }
 
+        [Display(Name = "Season")]
         [ForeignKey("Season")]
         public int SeasonId { get; set; }
 
         public Season Season { get; set; }
 
+        [Display(Name = "Collaborator")]
         [ForeignKey("Collaborator")]
         public int CollaboratorId { get; set; }
 

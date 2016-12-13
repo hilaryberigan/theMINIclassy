@@ -12,6 +12,7 @@ using theMINIclassy.Models;
 using theMINIclassy.Models.AccountViewModels;
 using theMINIclassy.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using theMINIclassy.Data;
 
 namespace theMINIclassy.Controllers
 {
@@ -24,6 +25,7 @@ namespace theMINIclassy.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
             RoleManager<IdentityRole> roleManager,
@@ -122,12 +124,17 @@ namespace theMINIclassy.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
-                string employee = "7ebbdbd2-1809-47ba-816e-a54ee718a0a9";
-                string manager = "3a44d84b-25f9-41fd-b2de-587f28f978ea";
-                if(model.UserRole.ToString() == employee)
+
+                var manager = _context.Roles.Where(m => m.Name == "Manager").FirstOrDefault();
+                var employee = _context.Roles.Where(m => m.Name == "Employee").FirstOrDefault();
+
+
+                if (model.UserRole.ToString() == employee.Id)
                 {
                     var role = await _userManager.AddToRoleAsync(user, "Employee");
-                }else if(model.UserRole.ToString() == manager)
+                }
+
+                else if (model.UserRole.ToString() == manager.Id)
                 {
                     var role = await _userManager.AddToRoleAsync(user, "Manager");
                 }
