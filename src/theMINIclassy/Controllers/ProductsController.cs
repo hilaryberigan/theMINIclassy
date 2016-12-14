@@ -235,7 +235,61 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
+        public async Task<IActionResult> EditProductQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var product = await _context.Product.SingleOrDefaultAsync(m => m.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);
+            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
+            return View(product);
+        }
+
+        // POST: Products/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProductQuantity(int id, [Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product)
+        {
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);
+            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
+            return View(product);
+        }
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

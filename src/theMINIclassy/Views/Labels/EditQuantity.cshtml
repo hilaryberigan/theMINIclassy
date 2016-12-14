@@ -1,14 +1,14 @@
-@model theMINIclassy.Models.Product
+@model theMINIclassy.Models.Label
 
 @{
-    ViewData["Title"] = "EditProductQuantity";
+    ViewData["Title"] = "EditQuantity";
 }
 
 <h2>Edit Quantity</h2>
 
 <form asp-action="EditQuantity">
     <div class="form-horizontal">
-        <h4>Total Quantity for:   @Model.Title    ||    @Model.SKU</h4>
+        <h4>Total Quantity for:   @Model.Title  </h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="Id" />
@@ -30,9 +30,10 @@
 </form>
 
 <div>
-    <a asp-controller="Home" asp-action="Index">Back to List</a>
+    <a asp-controller="Home" asp-action="SupplyInventory">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
