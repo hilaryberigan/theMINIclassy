@@ -117,6 +117,57 @@ namespace theMINIclassy.Controllers
             return View(tag);
         }
 
+        public async Task<IActionResult> EditQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tag = await _context.Tag.SingleOrDefaultAsync(m => m.Id == id);
+            if (tag == null)
+            {
+                return NotFound();
+            }
+            return View(tag);
+        }
+
+        // POST: Tags/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Tag tag)
+        {
+            tag.LastUpdated = DateTime.Now;
+            if (id != tag.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(tag);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TagExists(tag.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(tag);
+        }
+
         // GET: Tags/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

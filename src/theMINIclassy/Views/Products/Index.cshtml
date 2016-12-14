@@ -16,10 +16,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
+                @Html.DisplayNameFor(model => model.SKU)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MinThreshold)
@@ -27,15 +30,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Quantity)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SKU)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TechPackPath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
+                  
             <th></th>
         </tr>
     </thead>
@@ -43,38 +38,29 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
+                @Html.DisplayFor(modelItem => item.SKU)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.MinThreshold)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
+            </td>                     
             <td>
-                @Html.DisplayFor(modelItem => item.SKU)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TechPackPath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a>
+                {                 
+                    <a asp-action="EditProductQuantity" asp-route-id="@item.Id">Change Stock Quantity</a> 
                 }
-                @if (User.IsInRole("Admin") || User.IsInRole("Manager") || User.IsInRole("Employee"))
-                {
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                }
-
                 @if (User.IsInRole("Admin"))
                 {
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a>
                     <a asp-action="Delete" asp-route-id="@item.Id">| Delete</a>
                 }
             </td>

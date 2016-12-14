@@ -116,6 +116,56 @@ namespace theMINIclassy.Controllers
             }
             return View(notion);
         }
+        public async Task<IActionResult> EditQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var notion = await _context.Notion.SingleOrDefaultAsync(m => m.Id == id);
+            if (notion == null)
+            {
+                return NotFound();
+            }
+            return View(notion);
+        }
+
+        // POST: Notions/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Notion notion)
+        {
+            notion.LastUpdated = DateTime.Now;
+            if (id != notion.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(notion);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!NotionExists(notion.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(notion);
+        }
 
         // GET: Notions/Delete/5
         public async Task<IActionResult> Delete(int? id)

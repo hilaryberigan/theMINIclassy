@@ -64,7 +64,6 @@ namespace theMINIclassy.Controllers
             }
             return View(label);
         }
-
         // GET: Labels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -87,6 +86,57 @@ namespace theMINIclassy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Label label)
+        {
+            label.LastUpdated = DateTime.Now;
+            if (id != label.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(label);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!LabelExists(label.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(label);
+        }
+        // GET: Labels/Edit/5
+        public async Task<IActionResult> EditQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var label = await _context.Label.SingleOrDefaultAsync(m => m.Id == id);
+            if (label == null)
+            {
+                return NotFound();
+            }
+            return View(label);
+        }
+
+        // POST: Labels/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Label label)
         {
             label.LastUpdated = DateTime.Now;
             if (id != label.Id)

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using theMINIclassy.Services;
+using NLog.Extensions.Logging;
 
 namespace theMINIclassy
 {
@@ -64,7 +65,8 @@ namespace theMINIclassy
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
+            loggerFactory.AddNLog();
+            env.ConfigureNLog("nlog.config");
             app.UseApplicationInsightsRequestTelemetry();
 
             if (env.IsDevelopment())
