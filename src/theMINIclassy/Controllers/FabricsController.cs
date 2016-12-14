@@ -64,7 +64,56 @@ namespace theMINIclassy.Controllers
             }
             return View(fabric);
         }
+        public async Task<IActionResult> EditQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var fabric = await _context.Fabric.SingleOrDefaultAsync(m => m.Id == id);
+            if (fabric == null)
+            {
+                return NotFound();
+            }
+            return View(fabric);
+        }
+
+        // POST: Fabrics/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
+        {
+            fabric.LastUpdated = DateTime.Now;
+            if (id != fabric.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(fabric);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!FabricExists(fabric.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", new { id = fabric.Id });
+            }
+            return View(fabric);
+        }
         // GET: Fabrics/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,6 +129,7 @@ namespace theMINIclassy.Controllers
             }
             return View(fabric);
         }
+
 
         // POST: Fabrics/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

@@ -40,7 +40,7 @@ namespace theMINIclassy.Controllers
             return View();
         }
 
-        public IActionResult SupplyInventory()
+        public IActionResult SupplyInventory(string sortOrder, string searchString)
         {
 
             SupplyViewModel model = new SupplyViewModel();
@@ -52,7 +52,7 @@ namespace theMINIclassy.Controllers
                     supply.Id = item.Id;
                     supply.Title = item.Title;
                     supply.Quantity = item.Quantity;
-                    supply.Type = "Fabric";
+                    supply.Type = "Fabrics";
                     supply.Measure = "yds";
                     supplies.Add(supply);
                     
@@ -65,7 +65,7 @@ namespace theMINIclassy.Controllers
                     supply.Id = item.Id;
                     supply.Title = item.Title;
                     supply.Quantity = item.Quantity;
-                    supply.Type = "Label";
+                    supply.Type = "Labels";
                     supply.Measure = "units";
                     supplies.Add(supply);
             }
@@ -77,7 +77,8 @@ namespace theMINIclassy.Controllers
                     supply.Id = item.Id;
                     supply.Title = item.Title;
                     supply.Quantity = item.Quantity;
-                    supply.Type = "units";
+                    supply.Type = "Tags";
+                    supply.Measure = "units";
                     supplies.Add(supply);
             }
             
@@ -88,9 +89,45 @@ namespace theMINIclassy.Controllers
                     supply.Id = item.Id;
                     supply.Title = item.Title;
                     supply.Quantity = item.Quantity;
-                    supply.Type = "Notion";
+                    supply.Type = "Notions";
                     supply.Measure = "units";
                     supplies.Add(supply);
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var temp = supplies.Where(s => s.Title != null && s.Type != null);
+                supplies = temp.Where(s => s.Title.ToUpper().Contains(searchString.ToUpper())
+                                       || s.Type.ToUpper().Contains(searchString.ToUpper())).ToList();
+            }
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
+            ViewData["TypeSortParm"] = sortOrder == "Type" ? "Type_desc" : "Type";
+            ViewData["QuantSortParm"] = sortOrder == "Quantity" ? "Quant_desc" : "Type";
+            switch (sortOrder)
+            {
+                case "Type":
+                    supplies = supplies.OrderByDescending(s => s.Type).ToList();
+                    break;
+
+                case "Type_desc":
+                    supplies = supplies.OrderBy(s => s.Type).ToList();
+                    break;
+                case "Quantity":
+                    supplies = supplies.OrderBy(s => s.Quantity).ToList();
+                    break;
+                case "Quant_desc":
+                    supplies = supplies.OrderByDescending(s => s.Quantity).ToList();
+                    break;
+                case "Title":
+                    supplies = supplies.OrderBy(s => s.Title).ToList();
+                    break;
+                case "Title_desc":
+                    supplies = supplies.OrderByDescending(s => s.Title).ToList();
+                    break;
+                default:
+                    supplies = supplies.OrderBy(s => s.Type).ToList();
+                    break;
             }
             model.Supplies = supplies;
 
