@@ -66,7 +66,6 @@ namespace theMINIclassy.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Code,Title")] Style style)
-
         {
             if (ModelState.IsValid)
             {
