@@ -47,7 +47,7 @@ namespace theMINIclassy.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id");
+            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Name");
             return View();
         }
         [Authorize]
@@ -60,6 +60,11 @@ namespace theMINIclassy.Controllers
         {
             order.OrderDate = DateTime.Now;
             if (ModelState.IsValid)
+            {
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }else
             {
                 _context.Add(order);
                 await _context.SaveChangesAsync();

@@ -1,0 +1,14 @@
+﻿@model theMINIclassy.Models.ManageViewModels.ExceptionViewModel
+
+<h1>Error!</h1>
+<br />
+<h3>An error occured while you were trying to change the product @Model.Product.Title quantity.</h3>
+<br />
+<h5>Errors:</h5>
+<br />
+<ul>
+    @foreach (var item in Model.errors)
+    {
+        <li><strong>@item</strong></li>
+    }
+</ul>

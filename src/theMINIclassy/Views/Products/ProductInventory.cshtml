@@ -44,7 +44,7 @@
 
             @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
             {
-                <a asp-action="EditProductQuantity" asp-route-id="@item.Id">Change Stock Quantity</a>
+                 <a asp-action="EditProductQuantity" asp-route-id="@item.Id"> | Change Stock Quantity</a>
             }
             </td>
         </tr>
