@@ -169,7 +169,9 @@ namespace theMINIclassy.Controllers
             }
             return View(fabric);
         }
+
         [Authorize]
+
         // GET: Fabrics/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

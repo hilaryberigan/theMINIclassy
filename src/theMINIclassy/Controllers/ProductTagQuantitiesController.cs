@@ -14,7 +14,7 @@ namespace theMINIclassy.Controllers
     public class ProductTagQuantitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        [Authorize]
+   
         public ProductTagQuantitiesController(ApplicationDbContext context)
         {
             _context = context;    
