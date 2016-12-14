@@ -8,8 +8,8 @@ using theMINIclassy.Data;
 namespace theMINIclassy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161212204144_initial")]
-    partial class initial
+    [Migration("20161214170430_intitial")]
+    partial class intitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -410,7 +410,7 @@ namespace theMINIclassy.Data.Migrations
 
                     b.Property<decimal>("MinThreshold");
 
-                    b.Property<string>("Quantity");
+                    b.Property<int>("Quantity");
 
                     b.Property<string>("SKU");
 

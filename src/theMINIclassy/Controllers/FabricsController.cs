@@ -7,21 +7,28 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class FabricsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public FabricsController(ApplicationDbContext context)
+
+        public FabricsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
 
         // GET: Fabrics
         public async Task<IActionResult> Index()
-        {
+        {          
             return View(await _context.Fabric.ToListAsync());
         }
 
@@ -55,11 +62,13 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             fabric.LastUpdated = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(fabric);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " Created new Fabric called: " + fabric.Title);
                 return RedirectToAction("Index");
             }
             return View(fabric);
@@ -87,6 +96,7 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
         {
             fabric.LastUpdated = DateTime.Now;
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != fabric.Id)
             {
                 return NotFound();
@@ -98,6 +108,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(fabric);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " Edited Fabric: " + fabric.Title + " to quantity of: " + fabric.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
