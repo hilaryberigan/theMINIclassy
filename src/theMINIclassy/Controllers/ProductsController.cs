@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using theMINIclassy.Models.ManageViewModels;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace theMINIclassy.Controllers
 {
@@ -15,9 +18,12 @@ namespace theMINIclassy.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ProductsController(ApplicationDbContext context)
+        private IHostingEnvironment _environment;
+
+        public ProductsController(ApplicationDbContext context, IHostingEnvironment environment)
         {
-            _context = context;    
+            _context = context;
+            _environment = environment;
         }
 
         // GET: Products
@@ -45,10 +51,52 @@ namespace theMINIclassy.Controllers
             {
                 PFQ.Add(item);
             }
+            List<ProductNotionQuantity> PNQ = new List<ProductNotionQuantity>();
+            foreach(var item in _context.ProductNotionQuantity)
+            {
+                PNQ.Add(item);
+            }
+            List<ProductLabelQuantity> PLQ = new List<ProductLabelQuantity>();
+            foreach(var item in _context.ProductLabelQuantity)
+            {
+                PLQ.Add(item);
+            }
+            List<ProductTagQuantity> PTQ = new List<ProductTagQuantity>();
+            foreach(var item in _context.ProductTagQuantity)
+            {
+                PTQ.Add(item);
+            }
+            List<Fabric> allFab = new List<Fabric>();
+            foreach(var item in _context.Fabric)
+            {
+                allFab.Add(item);
+            }
+            List<Notion> allNot = new List<Notion>();
+            foreach(var item in _context.Notion)
+            {
+                allNot.Add(item);
+            }
+            List<Tag> allTag = new List<Tag>();
+            foreach(var item in _context.Tag)
+            {
+                allTag.Add(item);
+            }
+            List<Label> allLab = new List<Label>();
+            foreach(var item in _context.Label)
+            {
+                allLab.Add(item);
+            }
             var model = new ProductViewModel
             {
                 Product = product,
-                PFQuantities = PFQ
+                PFQuantities = PFQ,
+                PNQuantities = PNQ,
+                PLQuantities = PLQ,
+                PTQuantities = PTQ,
+                Fabrics = allFab,
+                Notions = allNot,
+                Tags = allTag,
+                Labels = allLab
             };
             return View(model);
         }
@@ -66,11 +114,17 @@ namespace theMINIclassy.Controllers
 
                 allFabs.Add(item);
             }
+            List<Notion> allNots = new List<Notion>();
+            foreach(var item in _context.Notion)
+            {
+                allNots.Add(item);
+            }
             var model = new ProductViewModel
             {
                 Product = new Product(),
                 Collections = _context.Collection.ToList(),
-                Fabrics = allFabs
+                Fabrics = allFabs,
+                Notions = allNots
             };
             return View(model);
         }
@@ -80,19 +134,45 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity)
+        public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity, ICollection<IFormFile> files)
         {
-            
+            product.Quantity = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(product);
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                var images = Path.Combine(_environment.WebRootPath, "images");
+                int count = 0;
+                foreach (var file in files)
+                {
+                    if (file.Length > 0)
+                    {
+                        if (count == 0)
+                        {
+
+                            using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                            uploads += "\\" + file.FileName;
+                            count++;
+                        }
+                        else
+                        {
+                            using (var fileStream = new FileStream(Path.Combine(images, file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                            images += "\\" + file.FileName;
+                        }
+                    }
+                }
+
+                product.TechPackPath = uploads;
+                product.ImagePath = images;
                 await _context.SaveChangesAsync();
                 int saveId = product.Id;
-                for (int i = 0; i < FabricsQuantity; i++)
-                {
-                    return RedirectToAction("create", "ProductFabricQuantities", new { id = product.Id });
-                }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","Products", new { id = product.Id });
             }
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);

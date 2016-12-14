@@ -72,8 +72,8 @@ namespace theMINIclassy.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Products", new { id = productFabricQuantity.ProductId });
             }
-            ViewData["FabricId"] = new SelectList(_context.Fabric, "Id", "Id", productFabricQuantity.FabricId);
-            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productFabricQuantity.ProductId);
+            ViewData["FabricId"] = new SelectList(_context.Fabric, "Id", "Title", productFabricQuantity.FabricId);
+            ViewData["ProductId"] = productFabricQuantity.ProductId;
             return View(productFabricQuantity);
         }
 
@@ -102,6 +102,8 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FabricId,ProductId,QtyFabricOnProduct")] ProductFabricQuantity productFabricQuantity)
         {
+            //productFabricQuantity.ProductId = productFabricQuantity.Id;
+            //productFabricQuantity.Id = 0;
             if (id != productFabricQuantity.Id)
             {
                 return NotFound();
@@ -125,10 +127,10 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","Products", new { id = productFabricQuantity.ProductId });
             }
             ViewData["FabricId"] = new SelectList(_context.Fabric, "Id", "Id", productFabricQuantity.FabricId);
-            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productFabricQuantity.ProductId);
+            ViewData["ProductId"] = productFabricQuantity.ProductId;
             return View(productFabricQuantity);
         }
 
@@ -155,9 +157,10 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productFabricQuantity = await _context.ProductFabricQuantity.SingleOrDefaultAsync(m => m.Id == id);
+            var productId = productFabricQuantity.ProductId;
             _context.ProductFabricQuantity.Remove(productFabricQuantity);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details","Products", new { id = productId });
         }
 
         private bool ProductFabricQuantityExists(int id)
