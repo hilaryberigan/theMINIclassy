@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using theMINIclassy.Models.ManageViewModels;
+
 
 namespace theMINIclassy.Controllers
 {
@@ -39,8 +41,36 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
+            List<Style> allSty = new List<Style>();
+            foreach(var item in _context.Style)
+            {
+                allSty.Add(item);
+            }
+            List<Variation> allVar = new List<Variation>();
+            foreach(var item in _context.Variation)
+            {
+                allVar.Add(item);
+            }
+            List<PatPieceStyle> PPS = new List<PatPieceStyle>();
+            foreach(var item in _context.PatPieceStyle)
+            {
+                PPS.Add(item);
+            }
+            List<PatPieceVariation> PPV = new List<PatPieceVariation>();
+            foreach(var item in _context.PatPieceVariation)
+            {
+                PPV.Add(item);
+            }
+            var model = new PatPieceViewModel
+            {
+                PatternPiece = patternPiece,
+                PatPieceStyles = PPS,
+                PatPieceVariations = PPV,
+                Styles = allSty,
+                Variations = allVar
+            };
 
-            return View(patternPiece);
+            return View(model);
         }
         [Authorize]
         // GET: PatternPieces/Create
@@ -60,7 +90,7 @@ namespace theMINIclassy.Controllers
             {
                 _context.Add(patternPiece);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","PatternPieces",new { id = patternPiece.Id });
             }
             return View(patternPiece);
         }

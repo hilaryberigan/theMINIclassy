@@ -45,24 +45,24 @@ namespace theMINIclassy.Controllers
         }
         [Authorize]
         // GET: PatPieceStyles/Create
-        public IActionResult Create(int Id)
+        public IActionResult Create(int? Id)
         {
 
-            ViewData["SelectPatPiece"] = new SelectList(_context.PatternPiece, "Title", "Title");
-            StyleViewModel model = new StyleViewModel();
-            model.Style.Id = Id;
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title");
+            ViewData["PatPieceId"] = Id;
             
-            return View(model);
+            return View();
         }
-        [Authorize]
-        public IActionResult AddAnother(int Id)
-        {
 
-            PatPieceStyle patPieceStyle = new PatPieceStyle();
-            patPieceStyle.Style.Id = Id;
-            return View(patPieceStyle);
-        }
-        [Authorize]
+        //public IActionResult AddAnother(int Id)
+        //{
+
+        //    PatPieceStyle patPieceStyle = new PatPieceStyle();
+        //    patPieceStyle.Style.Id = Id;
+        //    return View(patPieceStyle);
+        //}
+
+
         // POST: PatPieceStyles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -70,12 +70,13 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PatPieceId,StyleId")] PatPieceStyle patPieceStyle)
         {
-
+            patPieceStyle.PatPieceId = patPieceStyle.Id;
+            patPieceStyle.Id = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(patPieceStyle);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("AddAnother", new { Id = patPieceStyle.Style.Id });
+                return RedirectToAction("Details","PatternPieces", new { id = patPieceStyle.PatPieceId });
             }
             ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Id", patPieceStyle.PatPieceId);
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);
@@ -96,7 +97,7 @@ namespace theMINIclassy.Controllers
                 return NotFound();
             }
             ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Id", patPieceStyle.PatPieceId);
-            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title", patPieceStyle.StyleId);
             return View(patPieceStyle);
         }
 
@@ -132,10 +133,10 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","PatternPieces",new { id = patPieceStyle.PatPieceId });
             }
             ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Id", patPieceStyle.PatPieceId);
-            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title", patPieceStyle.StyleId);
             return View(patPieceStyle);
         }
         [Authorize]
@@ -162,9 +163,10 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var patPieceStyle = await _context.PatPieceStyle.SingleOrDefaultAsync(m => m.Id == id);
+            var oldId = patPieceStyle.PatPieceId;
             _context.PatPieceStyle.Remove(patPieceStyle);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details","PatternPieces",new { id = oldId });
         }
         [Authorize]
         private bool PatPieceStyleExists(int id)

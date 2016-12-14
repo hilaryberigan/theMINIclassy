@@ -1,4 +1,4 @@
-@model theMINIclassy.Models.PatternPiece
+@model theMINIclassy.Models.ManageViewModels.PatPieceViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,17 +11,60 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.PatternPiece.Title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.PatternPiece.Title)
         </dd>
+        @if (Model.PatPieceStyles != null)
+        {
+            <dt>Style(s)</dt>
+            @foreach (var item in Model.PatPieceStyles)
+            {
+                if (item.PatPieceId == Model.PatternPiece.Id)
+                {
+                    foreach (var x in Model.Styles)
+                    {
+                        if (x.Id == item.StyleId)
+                        {
+                            <dd>@x.Title | <a asp-controller="PatPieceStyles" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="PatPieceStyles" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
+                        }
+
+                    }
+                }
+            }
+        }
+        @if (Model.PatPieceStyles != null)
+        {
+            <dt>Variation(s)</dt>
+            @foreach (var item in Model.PatPieceVariations)
+            {
+                if (item.PatPieceId == Model.PatternPiece.Id)
+                {
+                    foreach (var x in Model.Variations)
+                    {
+                        if (x.Id == item.VariationId)
+                        {
+                            <dd>@x.Title | <a asp-controller="PatPieceVariations" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="PatPieceVariations" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
+                        }
+
+                    }
+                }
+            }
+        }
     </dl>
+</div>
+<br />
+<br />
+<br />
+<div>
+    <a asp-controller="PatPieceStyles" asp-action="Create" asp-route-id="@Model.PatternPiece.Id"><h5>ADD STYLE</h5></a>
+    <a asp-controller="PatPieceVariations" asp-action="Create" asp-route-id="@Model.PatternPiece.Id"><h5>ADD VARIATION</h5></a>
 </div>
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit |</a>
+        <a asp-action="Edit" asp-route-id="@Model.PatternPiece.Id">Edit |</a>
     }
     <a asp-action="Index">Back to List</a>
 </div>
