@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class CollaboratorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public CollaboratorsController(ApplicationDbContext context)
+        public CollaboratorsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Collaborators
@@ -56,10 +62,12 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Collaborator collaborator)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (ModelState.IsValid)
             {
                 _context.Add(collaborator);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created new Collaborator: " + collaborator.Name);
                 return RedirectToAction("Index");
             }
             return View(collaborator);
@@ -74,6 +82,7 @@ namespace theMINIclassy.Controllers
             }
 
             var collaborator = await _context.Collaborator.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Collaborator name: " + collaborator.Name);
             if (collaborator == null)
             {
                 return NotFound();
@@ -88,6 +97,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Collaborator collaborator)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != collaborator.Id)
             {
                 return NotFound();
@@ -99,6 +109,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(collaborator);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " changed Collaborator name to " + collaborator.Name);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -138,9 +149,11 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var collaborator = await _context.Collaborator.SingleOrDefaultAsync(m => m.Id == id);
             _context.Collaborator.Remove(collaborator);
             await _context.SaveChangesAsync();
+            logger.Info(user + " deleted Collaborator " + collaborator.Name);
             return RedirectToAction("Index");
         }
         [Authorize]

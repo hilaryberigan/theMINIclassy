@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class AddressesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public AddressesController(ApplicationDbContext context)
+        public AddressesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
 
         // GET: Addresses
@@ -57,7 +63,8 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ApartmentNumber,City,State,StreetName,StreetNumber,ZipCode")] Address address)
         {
-            if(address.ApartmentNumber == null)
+            var user = _userManger.GetUserName(HttpContext.User);
+            if (address.ApartmentNumber == null)
             {
                 address.ApartmentNumber = "";
             }
@@ -65,6 +72,7 @@ namespace theMINIclassy.Controllers
             {
                 _context.Add(address);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " Created new Address" + address.GetFullAddr);
                 return RedirectToAction("Create", "Customers");
             }
             return View(address);
@@ -79,6 +87,7 @@ namespace theMINIclassy.Controllers
             }
 
             var address = await _context.Address.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Address" + address.GetFullAddr);
             if (address == null)
             {
                 return NotFound();
@@ -93,6 +102,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,ApartmentNumber,City,State,StreetName,StreetNumber,ZipCode")] Address address)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != address.Id)
             {
                 return NotFound();
@@ -104,6 +114,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(address);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited Address to: " + address.GetFullAddr);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,9 +154,11 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var address = await _context.Address.SingleOrDefaultAsync(m => m.Id == id);
             _context.Address.Remove(address);
             await _context.SaveChangesAsync();
+            logger.Info(user + " deleted " + address.GetFullAddr);
             return RedirectToAction("Index");
         }
 

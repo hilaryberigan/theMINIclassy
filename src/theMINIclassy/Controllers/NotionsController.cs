@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class NotionsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public NotionsController(ApplicationDbContext context)
+        public NotionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Notions
@@ -56,11 +62,13 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Notion notion)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             notion.LastUpdated = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(notion);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created Notion: " + notion.Title);
                 return RedirectToAction("Index");
             }
             return View(notion);
@@ -75,6 +83,7 @@ namespace theMINIclassy.Controllers
             }
 
             var notion = await _context.Notion.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current" + notion.Title + " quantity: " + notion.Quantity);
             if (notion == null)
             {
                 return NotFound();
@@ -89,6 +98,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Notion notion)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             notion.LastUpdated = DateTime.Now;
             if (id != notion.Id)
             {
@@ -101,6 +111,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(notion);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited " + notion.Title + " Quantity to: " + notion.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -126,6 +137,7 @@ namespace theMINIclassy.Controllers
             }
 
             var notion = await _context.Notion.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current " + notion.Title + " quantity " + notion.Quantity);
             if (notion == null)
             {
                 return NotFound();
@@ -140,6 +152,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Notion notion)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             notion.LastUpdated = DateTime.Now;
             if (id != notion.Id)
             {
@@ -152,6 +165,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(notion);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited " + notion.Title + " quantity to: " + notion.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -191,9 +205,11 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var notion = await _context.Notion.SingleOrDefaultAsync(m => m.Id == id);
             _context.Notion.Remove(notion);
             await _context.SaveChangesAsync();
+            logger.Info(user + " deleted " + notion.Title);
             return RedirectToAction("Index");
         }
         [Authorize]
