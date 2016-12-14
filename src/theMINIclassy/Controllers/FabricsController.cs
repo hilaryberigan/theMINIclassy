@@ -150,6 +150,7 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
         {
             fabric.LastUpdated = DateTime.Now;
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != fabric.Id)
             {
                 return NotFound();
@@ -161,6 +162,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(fabric);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " Edited Fabric: " + fabric.Title + " to quantity of: " + fabric.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -201,8 +203,10 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var fabric = await _context.Fabric.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _userManger.GetUserName(HttpContext.User);
             _context.Fabric.Remove(fabric);
             await _context.SaveChangesAsync();
+            logger.Info(user + "deleted: " + fabric.Title);
             return RedirectToAction("Index");
         }
 
