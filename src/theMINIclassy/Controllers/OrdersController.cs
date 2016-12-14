@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Orders
@@ -58,11 +64,23 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CustomerId,OrderDate,OrderNumber,OrderStatus,OriginatedFrom")] Order order)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             order.OrderDate = DateTime.Now;
             if (ModelState.IsValid)
             {
+                var customerName = "";
+               
+                foreach (var item in _context.Customer)
+                {
+                    if (item.Id == order.CustomerId)
+                    {
+                        customerName = item.Name;
+                    }
+                }
+                
                 _context.Add(order);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created new order for " + customerName);
                 return RedirectToAction("Index");
             }else
             {
@@ -83,6 +101,7 @@ namespace theMINIclassy.Controllers
             }
 
             var order = await _context.Order.SingleOrDefaultAsync(m => m.Id == id);
+            //logger.Info("Current order status " + order.OrderStatus);
             if (order == null)
             {
                 return NotFound();
@@ -98,6 +117,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,OrderDate,OrderNumber,OrderStatus,OriginatedFrom")] Order order)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != order.Id)
             {
                 return NotFound();
@@ -107,8 +127,18 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var customerName = "";
+
+                    foreach (var item in _context.Customer)
+                    {
+                        if (item.Id == order.CustomerId)
+                        {
+                            customerName = item.Name;
+                        }
+                    }
                     _context.Update(order);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited order number " + customerName);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -149,9 +179,20 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var order = await _context.Order.SingleOrDefaultAsync(m => m.Id == id);
             _context.Order.Remove(order);
             await _context.SaveChangesAsync();
+            var customerName = "";
+
+            foreach (var item in _context.Customer)
+            {
+                if (item.Id == order.CustomerId)
+                {
+                    customerName = item.Name;
+                }
+            }
+            logger.Info(user + " deleted order number " + order.OrderNumber + " for customer " + customerName);
             return RedirectToAction("Index");
         }
         [Authorize]

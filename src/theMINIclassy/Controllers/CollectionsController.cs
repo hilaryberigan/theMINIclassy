@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class CollectionsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public CollectionsController(ApplicationDbContext context)
+        public CollectionsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Collections
@@ -59,10 +65,12 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Code,CollaboratorId,Month,SeasonId,Title")] Collection collection)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (ModelState.IsValid)
             {
                 _context.Add(collection);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created Collections: " + collection.Title);
                 return RedirectToAction("Index");
             }
             ViewData["CollaboratorId"] = new SelectList(_context.Collaborator, "Id", "Id", collection.CollaboratorId);
@@ -79,6 +87,7 @@ namespace theMINIclassy.Controllers
             }
 
             var collection = await _context.Collection.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current collection title: " + collection.Title);
             if (collection == null)
             {
                 return NotFound();
@@ -95,6 +104,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Code,CollaboratorId,Month,SeasonId,Title")] Collection collection)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != collection.Id)
             {
                 return NotFound();
@@ -106,6 +116,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(collection);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited Collection: " + collection.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -147,9 +158,11 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var collection = await _context.Collection.SingleOrDefaultAsync(m => m.Id == id);
             _context.Collection.Remove(collection);
             await _context.SaveChangesAsync();
+            logger.Info(user + " deleted Collection: " + collection.Title);
             return RedirectToAction("Index");
         }
         [Authorize]
