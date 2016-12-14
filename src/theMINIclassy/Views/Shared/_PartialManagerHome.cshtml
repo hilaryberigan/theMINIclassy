@@ -1,6 +1,30 @@
-﻿<h3>INVENTORIES</h3>
+﻿<h3>View and Manage Stock Inventories</h3>
 <table border="0" width="75%" cellpadding="4" cellspacing="3">
 
+    <tr>
+        <td><a asp-area="" asp-controller="Products" asp-action="ProductInventory">Product Inventories</a></td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Home" asp-action="SupplyInventory">Supply Inventories</a></td>
+    </tr>
+</table>
+
+<h3>Manage Orders</h3>
+<table border="0" width="60%" cellpadding="4" cellspacing="3">
+    <tr></tr>
+    @if (User.IsInRole("Manager"))
+    {
+    <tr>
+        <td><a asp-area="" asp-controller="Orders" asp-action="Create">Make an Order Record</a></td>
+    </tr>
+    }
+    <tr>
+        <td><a asp-area="" asp-controller="Orders" asp-action="Index">View/Change Orders</a></td>
+    </tr>
+</table>
+
+<h3>View and Manage Directories</h3>
+<table border="0" width="50%" cellpadding="4" cellspacing="3">
     <tr>
         <td><a asp-area="" asp-controller="Products" asp-action="Index">Product</a></td>
         <td>
@@ -31,30 +55,6 @@
             <a asp-controller="Notions" asp-action="Index">View/Change |</a>
         </td>
     </tr>
-</table>
-<h3>ORDERS</h3>
-<table border="0" width="60%" cellpadding="4" cellspacing="3">
-    <tr>
-        <td><a asp-area="" asp-controller="Orders" asp-action="Index">Order</a></td>
-        <td>
-            <a asp-controller="Orders" asp-action="Index">View/Change |</a>
-        </td>
-    </tr>
-    <tr>
-        <td><a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a></td>
-        <td>
-            <a asp-controller="Customers" asp-action="Index">View/Change |</a>
-        </td>
-    </tr>
-    <tr>
-        <td><a asp-area="" asp-controller="Addresses" asp-action="Index">Addresses</a></td>
-        <td>
-            <a asp-controller="Addresses" asp-action="Index">View/Change |</a>
-        </td>
-    </tr>
-</table>
-<h3>CATEGORIES</h3>
-<table border="0" width="50%" cellpadding="4" cellspacing="3">
     <tr>
         <td><a asp-area="" asp-controller="Collaborators" asp-action="Index">Collaborators</a></td>
         <td>
@@ -91,5 +91,16 @@
             <a asp-controller="Styles" asp-action="Index">View/Change |</a>
         </td>
     </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Customers" asp-action="Index">Customers</a></td>
+        <td>
+            <a asp-controller="Customers" asp-action="Index">View/Change |</a>
+        </td>
+    </tr>
+    <tr>
+        <td><a asp-area="" asp-controller="Addresses" asp-action="Index">Addresses</a></td>
+        <td>
+            <a asp-controller="Addresses" asp-action="Index">View/Change |</a>
+        </td>
+    </tr>
 </table>
-

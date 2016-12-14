@@ -34,7 +34,7 @@ namespace theMINIclassy.Controllers
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
         }
-
+        [Authorize]
         //
         // GET: /Manage/Index
         [HttpGet]
@@ -64,7 +64,7 @@ namespace theMINIclassy.Controllers
             };
             return View(model);
         }
-
+        [Authorize]
         //
         // POST: /Manage/RemoveLogin
         [HttpPost]
@@ -84,14 +84,14 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction(nameof(ManageLogins), new { Message = message });
         }
-
+        [Authorize]
         //
         // GET: /Manage/AddPhoneNumber
         public IActionResult AddPhoneNumber()
         {
             return View();
         }
-
+        [Authorize]
         //
         // POST: /Manage/AddPhoneNumber
         [HttpPost]
@@ -112,7 +112,7 @@ namespace theMINIclassy.Controllers
             await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
             return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
         }
-
+        [Authorize]
         //
         // POST: /Manage/EnableTwoFactorAuthentication
         [HttpPost]
@@ -128,7 +128,7 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction(nameof(Index), "Manage");
         }
-
+        [Authorize]
         //
         // POST: /Manage/DisableTwoFactorAuthentication
         [HttpPost]
@@ -144,7 +144,7 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction(nameof(Index), "Manage");
         }
-
+        [Authorize]
         //
         // GET: /Manage/VerifyPhoneNumber
         [HttpGet]
@@ -159,7 +159,7 @@ namespace theMINIclassy.Controllers
             // Send an SMS to verify the phone number
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
-
+        [Authorize]
         //
         // POST: /Manage/VerifyPhoneNumber
         [HttpPost]
@@ -184,7 +184,7 @@ namespace theMINIclassy.Controllers
             ModelState.AddModelError(string.Empty, "Failed to verify phone number");
             return View(model);
         }
-
+        [Authorize]
         //
         // POST: /Manage/RemovePhoneNumber
         [HttpPost]
@@ -203,7 +203,7 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
-
+        [Authorize]
         //
         // GET: /Manage/ChangePassword
         [HttpGet]
@@ -211,7 +211,7 @@ namespace theMINIclassy.Controllers
         {
             return View();
         }
-
+        [Authorize]
         //
         // POST: /Manage/ChangePassword
         [HttpPost]
@@ -237,7 +237,7 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
-
+        [Authorize]
         //
         // GET: /Manage/SetPassword
         [HttpGet]
@@ -245,7 +245,7 @@ namespace theMINIclassy.Controllers
         {
             return View();
         }
-
+        [Authorize]
         //
         // POST: /Manage/SetPassword
         [HttpPost]
@@ -271,7 +271,7 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
         }
-
+        [Authorize]
         //GET: /Manage/ManageLogins
         [HttpGet]
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
@@ -295,7 +295,7 @@ namespace theMINIclassy.Controllers
                 OtherLogins = otherLogins
             });
         }
-
+        [Authorize]
         //
         // POST: /Manage/LinkLogin
         [HttpPost]
@@ -307,7 +307,7 @@ namespace theMINIclassy.Controllers
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
             return Challenge(properties, provider);
         }
-
+        [Authorize]
         //
         // GET: /Manage/LinkLoginCallback
         [HttpGet]

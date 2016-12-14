@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,14 +19,14 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Orders
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Order.Include(o => o.Customer);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,14 +43,14 @@ namespace theMINIclassy.Controllers
 
             return View(order);
         }
-
+        [Authorize]
         // GET: Orders/Create
         public IActionResult Create()
         {
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id");
             return View();
         }
-
+        [Authorize]
         // POST: Orders/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -67,7 +68,7 @@ namespace theMINIclassy.Controllers
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id", order.CustomerId);
             return View(order);
         }
-
+        [Authorize]
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -84,7 +85,7 @@ namespace theMINIclassy.Controllers
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id", order.CustomerId);
             return View(order);
         }
-
+        [Authorize]
         // POST: Orders/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -120,7 +121,7 @@ namespace theMINIclassy.Controllers
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id", order.CustomerId);
             return View(order);
         }
-
+        [Authorize]
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -137,7 +138,7 @@ namespace theMINIclassy.Controllers
 
             return View(order);
         }
-
+        [Authorize]
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -148,7 +149,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.Id == id);

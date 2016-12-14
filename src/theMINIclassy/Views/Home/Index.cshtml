@@ -3,10 +3,11 @@
 }
 <br />
 
-@if(User.IsInRole("Admin"))
+@if (User.IsInRole("Admin"))
 {
     @await Html.PartialAsync("_PartialAdminHome");
-} else 
+}
+else
 {
-    @await Html.PartialAsync("_PartialManagerEmployeeHome");
+    @await Html.PartialAsync("_PartialManagerHome");
 }

@@ -11,6 +11,7 @@ using theMINIclassy.Models.ManageViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -25,14 +26,14 @@ namespace theMINIclassy.Controllers
             _context = context;
             _environment = environment;
         }
-
+        [Authorize]
         // GET: Products
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Product.Include(p => p.Collection).Include(p => p.Style).Include(p => p.Variation);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -100,7 +101,7 @@ namespace theMINIclassy.Controllers
             };
             return View(model);
         }
-
+        [Authorize]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -128,7 +129,7 @@ namespace theMINIclassy.Controllers
             };
             return View(model);
         }
-
+        [Authorize]
         // POST: Products/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -179,6 +180,7 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
+        [Authorize]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -197,7 +199,7 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
-
+        [Authorize]
         // POST: Products/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -235,6 +237,7 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
+        [Authorize]
         public async Task<IActionResult> EditProductQuantity(int? id)
         {
             if (id == null)
@@ -252,7 +255,7 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
-
+        [Authorize]
         // POST: Products/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -290,6 +293,55 @@ namespace theMINIclassy.Controllers
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
         }
+        [Authorize]
+        public IActionResult ProductInventory(string sortOrder, string searchString)
+        {
+
+
+            var products = _context.Product.Include(p => p.Collection).Include(p => p.Style).Include(p => p.Variation).ToList();
+            
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var temp = products.Where(s => s.Title != null && s.SKU != null);
+                products = temp.Where(s => s.Title.ToUpper().Contains(searchString.ToUpper())
+                                       || s.SKU.ToUpper().Contains(searchString.ToUpper())).ToList();
+            }
+
+            ViewData["TitleSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
+            ViewData["SKUSortParm"] = sortOrder == "SKU" ? "SKU_desc" : "SKU";
+            ViewData["QuantSortParm"] = sortOrder == "Quantity" ? "Quant_desc" : "Type";
+
+
+            switch (sortOrder)
+            {
+                case "SKU":
+                    products = products.OrderByDescending(s => s.SKU).ToList();
+                    break;
+
+                case "SKU_desc":
+                    products = products.OrderBy(s => s.SKU).ToList();
+                    break;
+                case "Quantity":
+                    products = products.OrderBy(s => s.Quantity).ToList();
+                    break;
+                case "Quant_desc":
+                    products = products.OrderByDescending(s => s.Quantity).ToList();
+                    break;
+                case "Title":
+                    products = products.OrderBy(s => s.Title).ToList();
+                    break;
+                case "Title_desc":
+                    products = products.OrderByDescending(s => s.Title).ToList();
+                    break;
+                default:
+                    products = products.OrderBy(s => s.SKU).ToList();
+                    break;
+            }
+
+            return View(products);
+        
+    }
+        [Authorize]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -306,7 +358,7 @@ namespace theMINIclassy.Controllers
 
             return View(product);
         }
-
+        [Authorize]
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -317,7 +369,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool ProductExists(int id)
         {
             return _context.Product.Any(e => e.Id == id);

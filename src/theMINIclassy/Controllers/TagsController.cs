@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,13 +19,13 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Tags
         public async Task<IActionResult> Index()
         {
             return View(await _context.Tag.ToListAsync());
         }
-
+        [Authorize]
         // GET: Tags/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -41,13 +42,13 @@ namespace theMINIclassy.Controllers
 
             return View(tag);
         }
-
+        [Authorize]
         // GET: Tags/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: Tags/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -64,7 +65,7 @@ namespace theMINIclassy.Controllers
             }
             return View(tag);
         }
-
+        [Authorize]
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,6 +81,7 @@ namespace theMINIclassy.Controllers
             }
             return View(tag);
         }
+        [Authorize]
 
         // POST: Tags/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -116,7 +118,7 @@ namespace theMINIclassy.Controllers
             }
             return View(tag);
         }
-
+        [Authorize]
         public async Task<IActionResult> EditQuantity(int? id)
         {
             if (id == null)
@@ -131,7 +133,7 @@ namespace theMINIclassy.Controllers
             }
             return View(tag);
         }
-
+        [Authorize]
         // POST: Tags/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -167,7 +169,7 @@ namespace theMINIclassy.Controllers
             }
             return View(tag);
         }
-
+        [Authorize]
         // GET: Tags/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -184,7 +186,7 @@ namespace theMINIclassy.Controllers
 
             return View(tag);
         }
-
+        [Authorize]
         // POST: Tags/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -195,7 +197,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool TagExists(int id)
         {
             return _context.Tag.Any(e => e.Id == id);

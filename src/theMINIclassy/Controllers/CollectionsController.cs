@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,14 +19,14 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Collections
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Collection.Include(c => c.Collaborator).Include(c => c.Season);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: Collections/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,7 +43,7 @@ namespace theMINIclassy.Controllers
 
             return View(collection);
         }
-
+        [Authorize]
         // GET: Collections/Create
         public IActionResult Create()
         {
@@ -50,7 +51,7 @@ namespace theMINIclassy.Controllers
             ViewData["SeasonId"] = new SelectList(_context.Season, "Id", "Title");
             return View();
         }
-
+        [Authorize]
         // POST: Collections/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -68,7 +69,7 @@ namespace theMINIclassy.Controllers
             ViewData["SeasonId"] = new SelectList(_context.Season, "Id", "Id", collection.SeasonId);
             return View(collection);
         }
-
+        [Authorize]
         // GET: Collections/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,7 +87,7 @@ namespace theMINIclassy.Controllers
             ViewData["SeasonId"] = new SelectList(_context.Season, "Id", "Id", collection.SeasonId);
             return View(collection);
         }
-
+        [Authorize]
         // POST: Collections/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -123,7 +124,7 @@ namespace theMINIclassy.Controllers
             ViewData["SeasonId"] = new SelectList(_context.Season, "Id", "Id", collection.SeasonId);
             return View(collection);
         }
-
+        [Authorize]
         // GET: Collections/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -140,7 +141,7 @@ namespace theMINIclassy.Controllers
 
             return View(collection);
         }
-
+        [Authorize]
         // POST: Collections/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -151,7 +152,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool CollectionExists(int id)
         {
             return _context.Collection.Any(e => e.Id == id);

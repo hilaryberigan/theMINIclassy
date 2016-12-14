@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,14 +19,14 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Customers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Customer.Include(c => c.Address);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,7 +43,7 @@ namespace theMINIclassy.Controllers
 
             return View(customer);
         }
-
+        [Authorize]
         // GET: Customers/Create
         public IActionResult Create()
         {
@@ -53,6 +54,7 @@ namespace theMINIclassy.Controllers
         // POST: Customers/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,AddressId,Email,Name,PhoneNumber")] Customer customer)
@@ -66,7 +68,7 @@ namespace theMINIclassy.Controllers
             ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
             return View(customer);
         }
-
+        [Authorize]
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -83,7 +85,7 @@ namespace theMINIclassy.Controllers
             ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
             return View(customer);
         }
-
+        [Authorize]
         // POST: Customers/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -119,7 +121,7 @@ namespace theMINIclassy.Controllers
             ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
             return View(customer);
         }
-
+        [Authorize]
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -136,7 +138,7 @@ namespace theMINIclassy.Controllers
 
             return View(customer);
         }
-
+        [Authorize]
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -147,7 +149,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool CustomerExists(int id)
         {
             return _context.Customer.Any(e => e.Id == id);

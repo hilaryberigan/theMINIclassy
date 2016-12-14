@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,13 +19,13 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Notions
         public async Task<IActionResult> Index()
         {
             return View(await _context.Notion.ToListAsync());
         }
-
+        [Authorize]
         // GET: Notions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -41,13 +42,13 @@ namespace theMINIclassy.Controllers
 
             return View(notion);
         }
-
+        [Authorize]
         // GET: Notions/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: Notions/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -64,7 +65,7 @@ namespace theMINIclassy.Controllers
             }
             return View(notion);
         }
-
+        [Authorize]
         // GET: Notions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,7 +81,7 @@ namespace theMINIclassy.Controllers
             }
             return View(notion);
         }
-
+        [Authorize]
         // POST: Notions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -116,6 +117,7 @@ namespace theMINIclassy.Controllers
             }
             return View(notion);
         }
+        [Authorize]
         public async Task<IActionResult> EditQuantity(int? id)
         {
             if (id == null)
@@ -130,7 +132,7 @@ namespace theMINIclassy.Controllers
             }
             return View(notion);
         }
-
+        [Authorize]
         // POST: Notions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -166,7 +168,7 @@ namespace theMINIclassy.Controllers
             }
             return View(notion);
         }
-
+        [Authorize]
         // GET: Notions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -183,7 +185,7 @@ namespace theMINIclassy.Controllers
 
             return View(notion);
         }
-
+        [Authorize]
         // POST: Notions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -194,7 +196,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool NotionExists(int id)
         {
             return _context.Notion.Any(e => e.Id == id);

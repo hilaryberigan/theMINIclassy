@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,13 +19,13 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Collaborators
         public async Task<IActionResult> Index()
         {
             return View(await _context.Collaborator.ToListAsync());
         }
-
+        [Authorize]
         // GET: Collaborators/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -41,13 +42,13 @@ namespace theMINIclassy.Controllers
 
             return View(collaborator);
         }
-
+        [Authorize]
         // GET: Collaborators/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: Collaborators/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -63,7 +64,7 @@ namespace theMINIclassy.Controllers
             }
             return View(collaborator);
         }
-
+        [Authorize]
         // GET: Collaborators/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -79,7 +80,7 @@ namespace theMINIclassy.Controllers
             }
             return View(collaborator);
         }
-
+        [Authorize]
         // POST: Collaborators/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -114,7 +115,7 @@ namespace theMINIclassy.Controllers
             }
             return View(collaborator);
         }
-
+        [Authorize]
         // GET: Collaborators/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -131,7 +132,7 @@ namespace theMINIclassy.Controllers
 
             return View(collaborator);
         }
-
+        [Authorize]
         // POST: Collaborators/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -142,7 +143,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool CollaboratorExists(int id)
         {
             return _context.Collaborator.Any(e => e.Id == id);

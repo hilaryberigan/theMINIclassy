@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,13 +19,13 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Variations
         public async Task<IActionResult> Index()
         {
             return View(await _context.Variation.ToListAsync());
         }
-
+        [Authorize]
         // GET: Variations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -41,13 +42,13 @@ namespace theMINIclassy.Controllers
 
             return View(variation);
         }
-
+        [Authorize]
         // GET: Variations/Create
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: Variations/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -63,7 +64,7 @@ namespace theMINIclassy.Controllers
             }
             return View(variation);
         }
-
+        [Authorize]
         // GET: Variations/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -79,7 +80,7 @@ namespace theMINIclassy.Controllers
             }
             return View(variation);
         }
-
+        [Authorize]
         // POST: Variations/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -114,7 +115,7 @@ namespace theMINIclassy.Controllers
             }
             return View(variation);
         }
-
+        [Authorize]
         // GET: Variations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -131,7 +132,7 @@ namespace theMINIclassy.Controllers
 
             return View(variation);
         }
-
+        [Authorize]
         // POST: Variations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -142,7 +143,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool VariationExists(int id)
         {
             return _context.Variation.Any(e => e.Id == id);

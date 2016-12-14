@@ -1,0 +1,53 @@
+@model IEnumerable<theMINIclassy.Models.Product>
+
+@{
+    ViewData["Title"] = "ProductInventory";
+}
+
+<h2>Product Inventory</h2>
+
+
+<p>
+    Search: @Html.TextBox("SearchString")
+    <input type="submit" value="Search" />
+    <input type="reset" value="Reset" onClick="Reset()" />
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("SKU", "ProductInventory", new { sortOrder = ViewBag.SKUSortParm })
+            </th>
+            <th>
+                @Html.ActionLink("Title", "ProductInventory", new { sortOrder = ViewBag.TitleSortParm })
+            </th>
+            <th>
+                @Html.ActionLink("Quantity", "ProductInventory", new { sortOrder = ViewBag.QuantSortParm })
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SKU)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>       
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+            @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
+            {
+                <a asp-action="EditProductQuantity" asp-route-id="@item.Id">Change Stock Quantity</a>
+            }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

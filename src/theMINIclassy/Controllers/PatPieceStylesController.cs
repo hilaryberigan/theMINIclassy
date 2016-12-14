@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,14 +19,14 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: PatPieceStyles
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.PatPieceStyle.Include(p => p.PatternPiece).Include(p => p.Style);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: PatPieceStyles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,7 +43,7 @@ namespace theMINIclassy.Controllers
 
             return View(patPieceStyle);
         }
-
+        [Authorize]
         // GET: PatPieceStyles/Create
         public IActionResult Create(int Id)
         {
@@ -53,7 +54,7 @@ namespace theMINIclassy.Controllers
             
             return View(model);
         }
-
+        [Authorize]
         public IActionResult AddAnother(int Id)
         {
 
@@ -61,7 +62,7 @@ namespace theMINIclassy.Controllers
             patPieceStyle.Style.Id = Id;
             return View(patPieceStyle);
         }
-
+        [Authorize]
         // POST: PatPieceStyles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -80,7 +81,7 @@ namespace theMINIclassy.Controllers
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);
             return View(patPieceStyle);
         }
-
+        [Authorize]
         // GET: PatPieceStyles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -98,6 +99,8 @@ namespace theMINIclassy.Controllers
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);
             return View(patPieceStyle);
         }
+
+        [Authorize]
 
         // POST: PatPieceStyles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -135,7 +138,7 @@ namespace theMINIclassy.Controllers
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);
             return View(patPieceStyle);
         }
-
+        [Authorize]
         // GET: PatPieceStyles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -152,7 +155,7 @@ namespace theMINIclassy.Controllers
 
             return View(patPieceStyle);
         }
-
+        [Authorize]
         // POST: PatPieceStyles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -163,7 +166,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool PatPieceStyleExists(int id)
         {
             return _context.PatPieceStyle.Any(e => e.Id == id);

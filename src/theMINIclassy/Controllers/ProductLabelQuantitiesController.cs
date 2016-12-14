@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,14 +19,14 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: ProductLabelQuantities
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.ProductLabelQuantity.Include(p => p.Label).Include(p => p.Product);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        [Authorize]
         // GET: ProductLabelQuantities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,7 +43,7 @@ namespace theMINIclassy.Controllers
 
             return View(productLabelQuantity);
         }
-
+        [Authorize]
         // GET: ProductLabelQuantities/Create
         public IActionResult Create(int? id)
         {
@@ -50,7 +51,7 @@ namespace theMINIclassy.Controllers
             ViewData["ProductId"] = id;
             return View();
         }
-
+        [Authorize]
         // POST: ProductLabelQuantities/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -76,7 +77,7 @@ namespace theMINIclassy.Controllers
             ViewData["ProductId"] = productLabelQuantity.ProductId;
             return View(productLabelQuantity);
         }
-
+        [Authorize]
         // GET: ProductLabelQuantities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -94,7 +95,7 @@ namespace theMINIclassy.Controllers
             ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productLabelQuantity.ProductId);
             return View(productLabelQuantity);
         }
-
+        [Authorize]
         // POST: ProductLabelQuantities/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -131,7 +132,7 @@ namespace theMINIclassy.Controllers
             ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productLabelQuantity.ProductId);
             return View(productLabelQuantity);
         }
-
+        [Authorize]
         // GET: ProductLabelQuantities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -148,7 +149,7 @@ namespace theMINIclassy.Controllers
 
             return View(productLabelQuantity);
         }
-
+        [Authorize]
         // POST: ProductLabelQuantities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -160,7 +161,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Products", new { id = productId });
         }
-
+        [Authorize]
         private bool ProductLabelQuantityExists(int id)
         {
             return _context.ProductLabelQuantity.Any(e => e.Id == id);

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using theMINIclassy.Models;
 using theMINIclassy.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -16,30 +17,31 @@ namespace theMINIclassy.Controllers
         {
             _context = context;
         }
+        [Authorize]
         public IActionResult Index()
         {
             return View();
         }
-
+        [Authorize]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
 
             return View();
         }
-
+        [Authorize]
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
 
             return View();
         }
-
+        [Authorize]
         public IActionResult Error()
         {
             return View();
         }
-
+        [Authorize]
         public IActionResult SupplyInventory(string sortOrder, string searchString)
         {
 

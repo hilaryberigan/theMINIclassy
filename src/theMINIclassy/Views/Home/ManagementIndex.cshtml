@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<br />
+
+@if (User.IsInRole("Admin"))
+{
+    @await Html.PartialAsync("_PartialAdminHome");
+}
+else
+{
+    @await Html.PartialAsync("_PartialManagerEmployeeHome");
+}

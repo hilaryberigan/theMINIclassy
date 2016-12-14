@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace theMINIclassy.Controllers
 {
@@ -18,13 +19,13 @@ namespace theMINIclassy.Controllers
         {
             _context = context;    
         }
-
+        [Authorize]
         // GET: Styles
         public async Task<IActionResult> Index()
         {
             return View(await _context.Style.ToListAsync());
         }
-
+        [Authorize]
         // GET: Styles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -41,12 +42,14 @@ namespace theMINIclassy.Controllers
 
             return View(style);
         }
+        [Authorize]
         // GET: Styles/Create
         public IActionResult Create()
         {
         
             return View();
         }
+        [Authorize]
         [HttpPost]
 
         public async Task<IActionResult> AddPatternPieceToStyle([Bind("Id,Code,Title")] Style style)
@@ -59,7 +62,7 @@ namespace theMINIclassy.Controllers
             }
             return RedirectToAction("Create");
         }
-
+        [Authorize]
         // POST: Styles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -77,7 +80,7 @@ namespace theMINIclassy.Controllers
             return View(style);
 
         }
-
+        [Authorize]
         // GET: Styles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -93,7 +96,7 @@ namespace theMINIclassy.Controllers
             }
             return View(style);
         }
-
+        [Authorize]
         // POST: Styles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -128,7 +131,7 @@ namespace theMINIclassy.Controllers
             }
             return View(style);
         }
-
+        [Authorize]
         // GET: Styles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -145,7 +148,7 @@ namespace theMINIclassy.Controllers
 
             return View(style);
         }
-
+        [Authorize]
         // POST: Styles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -156,7 +159,7 @@ namespace theMINIclassy.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
-
+        [Authorize]
         private bool StyleExists(int id)
         {
             return _context.Style.Any(e => e.Id == id);
