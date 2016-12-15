@@ -8,16 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class FabricsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public FabricsController(ApplicationDbContext context)
+
+        public FabricsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Fabrics
@@ -56,11 +63,13 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             fabric.LastUpdated = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(fabric);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " Created new Fabric called: " + fabric.Title);
                 return RedirectToAction("Index");
             }
             return View(fabric);
@@ -72,8 +81,8 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
-
             var fabric = await _context.Fabric.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current quantity of " + fabric.Title + ": " + fabric.Quantity);
             if (fabric == null)
             {
                 return NotFound();
@@ -90,8 +99,9 @@ namespace theMINIclassy.Controllers
         {
             var updateFabric = _context.Fabric.Where(x => x.Id == id).FirstOrDefault();
             updateFabric.Quantity = fabric.Quantity;
-
             updateFabric.LastUpdated = DateTime.Now;
+            var user = _userManger.GetUserName(HttpContext.User);
+
             if (id != fabric.Id)
             {
                 return NotFound();
@@ -103,6 +113,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(updateFabric);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " Edited Fabric: " + fabric.Title + " to quantity of: " + fabric.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,6 +140,7 @@ namespace theMINIclassy.Controllers
             }
 
             var fabric = await _context.Fabric.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current quantity of " + fabric.Title + ": " + fabric.Quantity);
             if (fabric == null)
             {
                 return NotFound();
@@ -144,6 +156,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             fabric.LastUpdated = DateTime.Now;
             if (id != fabric.Id)
             {
@@ -154,8 +167,10 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    
                     _context.Update(fabric);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " Edited Fabric: " + fabric.Title + " to quantity of: " + fabric.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -197,7 +212,9 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var fabric = await _context.Fabric.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted: " + fabric.Title);
             _context.Fabric.Remove(fabric);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

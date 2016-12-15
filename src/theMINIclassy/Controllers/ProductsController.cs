@@ -263,8 +263,26 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProductQuantity(int id, [Bind("Id,Quantity")] Product product)
         {
-            var updateProd = _context.Product.Where(x => x.Id == product.Id).FirstOrDefault();
-            updateProd.Quantity = product.Quantity;
+            //Dictionary hold key: fabric id & value: amount to decrease supply by
+            Dictionary<int, decimal> fabricDict = new Dictionary<int, decimal>();
+            //Dictionary hold key: notion id & value: amount to decrease supply by
+            Dictionary<int, decimal> notionDict = new Dictionary<int, decimal>();
+            //Dictionary hold key: label id & value: amount to decrease supply by
+            Dictionary<int, decimal> labelDict = new Dictionary<int, decimal>();
+            //Dictionary hold key: tag id & value: amount to decrease supply by
+            Dictionary<int, decimal> tagDict = new Dictionary<int, decimal>();
+            //Exception Dictionary hold key: conflicting object's title && value: saying problem
+            Dictionary<string, string> exceptionDict = new Dictionary<string, string>();
+
+            var oldProduct = new Product();
+            foreach (var item in _context.Product)
+            {
+                if(item.Id == product.Id)
+                {
+                    oldProduct = item;
+                }
+            }
+            
 
             if (id != product.Id)
             {
@@ -275,8 +293,213 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
-                    _context.Update(updateProd);
-                    await _context.SaveChangesAsync();
+                    foreach(var item in _context.ProductFabricQuantity)
+                    {
+                        if(item.ProductId == product.Id)
+                        {
+                            if (product.Quantity - oldProduct.Quantity > 0)
+                            {
+                                var temp = item.QtyFabricOnProduct * (product.Quantity - oldProduct.Quantity);
+                                foreach (var fabric in _context.Fabric)
+                                {
+                                    if (fabric.Id == item.FabricId)
+                                    {
+                                        var temp2 = fabric.Quantity - temp;
+                                        if (temp2 >= 0)
+                                        {
+                                            fabricDict.Add(fabric.Id, temp2);
+                                        }
+                                        else
+                                        {
+                                            exceptionDict.Add(fabric.Title, "Not enough supply to make product.");
+                                        }
+                                    }
+                                }
+                            }else
+                            {
+                                exceptionDict.Add(product.Title, "Product quantity can only decrease when its added to order.");
+                            }
+                        }
+                    }
+                    foreach (var item in _context.ProductNotionQuantity)
+                    {
+                        if (item.ProductId == product.Id)
+                        {
+                            if (product.Quantity - oldProduct.Quantity > 0)
+                            {
+                                var temp = item.QtyNotionOnProduct * (product.Quantity - oldProduct.Quantity);
+                                foreach (var notion in _context.Notion)
+                                {
+                                    if (notion.Id == item.NotionId)
+                                    {
+                                        var temp2 = notion.Quantity - temp;
+                                        if (temp2 >= 0)
+                                        {
+                                            notionDict.Add(notion.Id, temp2);
+                                        }
+                                        else
+                                        {
+                                            exceptionDict.Add(notion.Title, "Not enough supply to make product.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach (var item in _context.ProductLabelQuantity)
+                    {
+                        if (item.ProductId == product.Id)
+                        {
+                            if (product.Quantity - oldProduct.Quantity > 0)
+                            {
+                                var temp = item.QtyLabelOnProduct * (product.Quantity - oldProduct.Quantity);
+                                foreach (var label in _context.Label)
+                                {
+                                    if (label.Id == item.LabelId)
+                                    {
+                                        var temp2 = label.Quantity - temp;
+                                        if (temp2 >= 0)
+                                        {
+                                            labelDict.Add(label.Id, temp2);
+                                        }
+                                        else
+                                        {
+                                            exceptionDict.Add(label.Title, "Not enough supply to make product.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    foreach (var item in _context.ProductTagQuantity)
+                    {
+                        if (item.ProductId == product.Id)
+                        {
+                            if (product.Quantity - oldProduct.Quantity > 0)
+                            {
+                                var temp = item.QtyTagOnProduct * (product.Quantity - oldProduct.Quantity);
+                                foreach (var tag in _context.Fabric)
+                                {
+                                    if (tag.Id == item.TagId)
+                                    {
+                                        var temp2 = tag.Quantity - temp;
+                                        if (temp2 >= 0)
+                                        {
+                                            tagDict.Add(tag.Id, temp2);
+                                        }
+                                        else
+                                        {
+                                            exceptionDict.Add(tag.Title, "Not enough supply to make product.");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if(exceptionDict.Count > 0)
+                    {
+                        string errorStr = "";
+                        foreach(var item in exceptionDict.Keys)
+                        {
+                            errorStr += item + " -- " + exceptionDict[item] + "&&";
+                        }
+                        return RedirectToAction("Error", new { prodId = product.Id, exceptStr = errorStr.Substring(0,errorStr.Length - 2) });
+                    }
+                    else
+                    {
+                        oldProduct.Quantity = product.Quantity;
+                        _context.Update(oldProduct);
+                        await _context.SaveChangesAsync();
+                        //actions dictionary: key: title && value:action
+                        Dictionary<string, string> actionDict = new Dictionary<string, string>();
+                        actionDict.Add(oldProduct.Title, "Product quantity has been updated to " + oldProduct.Quantity);
+                        foreach(var item in fabricDict.Keys)
+                        {
+                            foreach(var fabric in _context.Fabric.ToList())
+                            {
+                                if(item == fabric.Id)
+                                {
+                                    fabric.Quantity = fabricDict[item];
+                                    _context.Fabric.Update(fabric);
+                                    await _context.SaveChangesAsync();
+                                    if (fabric.Quantity <= fabric.MinThreshold)
+                                    {
+                                        actionDict.Add(fabric.Title, "Fabric quantity updated, but stock is low: " + fabric.Quantity);
+                                    }else
+                                    {
+                                        actionDict.Add(fabric.Title, "Updated quantity is now at: " + fabric.Quantity);
+                                    }
+                                }
+                            }
+                        }
+                        foreach (var item in notionDict.Keys)
+                        {
+                            foreach (var notion in _context.Notion.ToList())
+                            {
+                                if (item == notion.Id)
+                                {
+                                    notion.Quantity = notionDict[item];
+                                    _context.Update(notion);
+                                    await _context.SaveChangesAsync();
+                                    if (notion.Quantity <= notion.MinThreshold)
+                                    {
+                                        actionDict.Add(notion.Title, "Fabric quantity updated, but stock is low: " + notion.Quantity);
+                                    }
+                                    else
+                                    {
+                                        actionDict.Add(notion.Title, "Updated quantity is now at: " + notion.Quantity);
+                                    }
+                                }
+                            }
+                        }
+                        foreach (var item in labelDict.Keys)
+                        {
+                            foreach (var label in _context.Label.ToList())
+                            {
+                                if (item == label.Id)
+                                {
+                                    label.Quantity = labelDict[item];
+                                    _context.Update(label);
+                                    await _context.SaveChangesAsync();
+                                    if (label.Quantity <= label.MinThreshold)
+                                    {
+                                        actionDict.Add(label.Title, "Fabric quantity updated, but stock is low: " + label.Quantity);
+                                    }
+                                    else
+                                    {
+                                        actionDict.Add(label.Title, "Updated quantity is now at: " + label.Quantity);
+                                    }
+                                }
+                            }
+                        }
+                        foreach (var item in tagDict.Keys)
+                        {
+                            foreach (var tag in _context.Tag.ToList())
+                            {
+                                if (item == tag.Id)
+                                {
+                                    tag.Quantity = tagDict[item];
+                                    _context.Update(tag);
+                                    await _context.SaveChangesAsync();
+                                    if (tag.Quantity <= tag.MinThreshold)
+                                    {
+                                        actionDict.Add(tag.Title, "Fabric quantity updated, but stock is low: " + tag.Quantity);
+                                    }
+                                    else
+                                    {
+                                        actionDict.Add(tag.Title, "Updated quantity is now at: " + tag.Quantity);
+                                    }
+                                }
+                            }
+                        }
+                        string actionStr = "";
+                        foreach (var item in actionDict.Keys)
+                        {
+                            actionStr += item + " -- " + actionDict[item] + "&&";
+                        }
+                        return RedirectToAction("Success", new { prodId = product.Id, actionStr = actionStr.Substring(0, actionStr.Length - 2) });
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -289,12 +512,50 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", new { id = product.Id });
+
+             return RedirectToAction("Details", new { id = product.Id });
+
             }
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
+        }
+        public IActionResult Success(int prodId,string actionStr)
+        {
+            string[] tempArray = actionStr.Split(new string[] { "&&" }, StringSplitOptions.None);
+            Product tempProd = new Product();
+            foreach(var item in _context.Product)
+            {
+                if(item.Id == prodId)
+                {
+                    tempProd = item;
+                }
+            }
+            var model = new ExceptionViewModel
+            {
+                Product = tempProd,
+                errors = tempArray
+            };
+            return View(model);
+        }
+        public IActionResult Error(int prodId,string exceptStr)
+        {
+            string[] tempArray = exceptStr.Split(new string[] { "&&" }, StringSplitOptions.None);
+            Product tempProd = new Product();
+            foreach(var item in _context.Product)
+            {
+                if(item.Id == prodId)
+                {
+                    tempProd = item;
+                }
+            }
+            var model = new ExceptionViewModel
+            {
+                Product = tempProd,
+                errors = tempArray
+            };
+            return View(model);
         }
         [Authorize]
         public IActionResult ProductInventory(string sortOrder, string searchString)

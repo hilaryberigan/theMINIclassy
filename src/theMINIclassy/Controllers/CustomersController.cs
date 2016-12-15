@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public CustomersController(ApplicationDbContext context)
+        public CustomersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager; 
         }
         [Authorize]
         // GET: Customers
@@ -59,10 +65,12 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,AddressId,Email,Name,PhoneNumber")] Customer customer)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (ModelState.IsValid)
             {
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created Customer: " + customer.Name);
                 return RedirectToAction("Index");
             }
             ViewData["AddressId"] = new SelectList(_context.Address, "Id", "Id", customer.AddressId);
@@ -78,6 +86,7 @@ namespace theMINIclassy.Controllers
             }
 
             var customer = await _context.Customer.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current customer Information: " + customer.Name);
             if (customer == null)
             {
                 return NotFound();
@@ -93,6 +102,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,AddressId,Email,Name,PhoneNumber")] Customer customer)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != customer.Id)
             {
                 return NotFound();
@@ -104,6 +114,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited Customer: " + customer.Name);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -144,7 +155,9 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var customer = await _context.Customer.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted Customer: " + customer.Name);
             _context.Customer.Remove(customer);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

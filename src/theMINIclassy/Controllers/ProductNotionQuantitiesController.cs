@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class ProductNotionQuantitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public ProductNotionQuantitiesController(ApplicationDbContext context)
+        public ProductNotionQuantitiesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: ProductNotionQuantities
@@ -61,16 +67,39 @@ namespace theMINIclassy.Controllers
         {
             productNotionQuantity.ProductId = productNotionQuantity.Id;
             productNotionQuantity.Id = 0;
+                var user = _userManger.GetUserName(HttpContext.User);
+                var productName = "";
+                var productQuantity = 0;
+                var notionName = "";
+                decimal notionQuantity = 0;
+                foreach(var item in _context.Product)
+                {
+                    if(productNotionQuantity.ProductId == item.Id)
+                    {
+                        productName = item.Title;
+                        productQuantity = item.Quantity;
+                    }
+                }
+                foreach(var item in _context.Notion)
+                {
+                    if(productNotionQuantity.NotionId == item.Id)
+                    {
+                        notionName = item.Title;
+                        notionQuantity = item.Quantity;
+                    }
+                }
             if (ModelState.IsValid)
             {
                 _context.Add(productNotionQuantity);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + productName + " with quantity of " + productQuantity + " and " + notionName + " with quantity of " + notionQuantity);
                 return RedirectToAction("Index");
             }
             else
             {
                 _context.Add(productNotionQuantity);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + productName + " with quantity of " + productQuantity + " and " + notionName + " with quantity of " + notionQuantity);
                 return RedirectToAction("Details", "Products", new { id = productNotionQuantity.ProductId });
             }
             ViewData["NotionId"] = new SelectList(_context.Notion, "Id", "Title", productNotionQuantity.NotionId);
@@ -87,6 +116,27 @@ namespace theMINIclassy.Controllers
             }
 
             var productNotionQuantity = await _context.ProductNotionQuantity.SingleOrDefaultAsync(m => m.Id == id);
+            var productName = "";
+            var productQuantity = 0;
+            var notionName = "";
+            decimal notionQuantity = 0;
+            foreach (var item in _context.Product)
+            {
+                if (productNotionQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach (var item in _context.Notion)
+            {
+                if (productNotionQuantity.NotionId == item.Id)
+                {
+                    notionName = item.Title;
+                    notionQuantity = item.Quantity;
+                }
+            }
+            logger.Info("Current " + productName + " with quantity of " + productQuantity + " and " + notionName + " with quantity of " + notionQuantity);
             if (productNotionQuantity == null)
             {
                 return NotFound();
@@ -112,8 +162,30 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    var productName = "";
+                    var productQuantity = 0;
+                    var notionName = "";
+                    decimal notionQuantity = 0;
+                    foreach (var item in _context.Product)
+                    {
+                        if (productNotionQuantity.ProductId == item.Id)
+                        {
+                            productName = item.Title;
+                            productQuantity = item.Quantity;
+                        }
+                    }
+                    foreach (var item in _context.Notion)
+                    {
+                        if (productNotionQuantity.NotionId == item.Id)
+                        {
+                            notionName = item.Title;
+                            notionQuantity = item.Quantity;
+                        }
+                    }
                     _context.Update(productNotionQuantity);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited to " + productName + " with quantity of " + productQuantity + " and " + notionName + " with quantity of " + notionQuantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -157,6 +229,28 @@ namespace theMINIclassy.Controllers
         {
             var productNotionQuantity = await _context.ProductNotionQuantity.SingleOrDefaultAsync(m => m.Id == id);
             var productId = productNotionQuantity.ProductId;
+            var user = _userManger.GetUserName(HttpContext.User);
+            var productName = "";
+            var productQuantity = 0;
+            var notionName = "";
+            decimal notionQuantity = 0;
+            foreach (var item in _context.Product)
+            {
+                if (productNotionQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach (var item in _context.Notion)
+            {
+                if (productNotionQuantity.NotionId == item.Id)
+                {
+                    notionName = item.Title;
+                    notionQuantity = item.Quantity;
+                }
+            }
+            logger.Info(user + " deleted " + productName + " and " + notionName);
             _context.ProductNotionQuantity.Remove(productNotionQuantity);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Products", new { id = productId });

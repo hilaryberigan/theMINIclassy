@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class StylesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public StylesController(ApplicationDbContext context)
+        public StylesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Styles
@@ -74,6 +80,8 @@ namespace theMINIclassy.Controllers
             {
                 _context.Add(style);
                 await _context.SaveChangesAsync();
+                var user = _userManger.GetUserName(HttpContext.User);
+                logger.Info(user + " created " + style.Title);
                 return RedirectToAction("Index");
             }
             return View(style);
@@ -89,6 +97,7 @@ namespace theMINIclassy.Controllers
             }
 
             var style = await _context.Style.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Style Title " + style.Title);
             if (style == null)
             {
                 return NotFound();
@@ -112,8 +121,10 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var user = _userManger.GetUserName(HttpContext.User);
                     _context.Update(style);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited to " + style.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -154,6 +165,8 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var style = await _context.Style.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _userManger.GetUserName(HttpContext.User);
+            logger.Info(user + " deleted " + style.Title);
             _context.Style.Remove(style);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

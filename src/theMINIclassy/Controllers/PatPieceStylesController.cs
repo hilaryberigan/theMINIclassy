@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class PatPieceStylesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public PatPieceStylesController(ApplicationDbContext context)
+        public PatPieceStylesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: PatPieceStyles
@@ -70,12 +76,30 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PatPieceId,StyleId")] PatPieceStyle patPieceStyle)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             patPieceStyle.PatPieceId = patPieceStyle.Id;
             patPieceStyle.Id = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(patPieceStyle);
                 await _context.SaveChangesAsync();
+                var styleName = "";
+                var patternName = "";
+                foreach(var item in _context.Style)
+                {
+                    if(item.Id == patPieceStyle.StyleId)
+                    {
+                        styleName = item.Title;
+                    }
+                }
+                foreach( var item in _context.PatternPiece)
+                {
+                    if(item.Id == patPieceStyle.PatPieceId)
+                    {
+                        patternName = item.Title;
+                    }
+                }
+                logger.Info(user + " created " + styleName + " and " + patternName);
                 return RedirectToAction("Details","PatternPieces", new { id = patPieceStyle.PatPieceId });
             }
             ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Id", patPieceStyle.PatPieceId);
@@ -90,8 +114,24 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
-
+            var styleName = "";
+            var patternName = "";
             var patPieceStyle = await _context.PatPieceStyle.SingleOrDefaultAsync(m => m.Id == id);
+            foreach (var item in _context.Style)
+            {
+                if (item.Id == patPieceStyle.StyleId)
+                {
+                    styleName = item.Title;
+                }
+            }
+            foreach (var item in _context.PatternPiece)
+            {
+                if (item.Id == patPieceStyle.PatPieceId)
+                {
+                    patternName = item.Title;
+                }
+            }
+            logger.Info("Current Pattern Piece and Style: " + styleName + " " + patternName);
             if (patPieceStyle == null)
             {
                 return NotFound();
@@ -110,6 +150,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,PatPieceId,StyleId")] PatPieceStyle patPieceStyle)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != patPieceStyle.Id)
             {
                 return NotFound();
@@ -119,8 +160,25 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var styleName = "";
+                    var patternName = "";
+                    foreach (var item in _context.Style)
+                    {
+                        if (item.Id == patPieceStyle.StyleId)
+                        {
+                            styleName = item.Title;
+                        }
+                    }
+                    foreach (var item in _context.PatternPiece)
+                    {
+                        if (item.Id == patPieceStyle.PatPieceId)
+                        {
+                            patternName = item.Title;
+                        }
+                    }
                     _context.Update(patPieceStyle);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited " + styleName + " and " + patternName);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -162,8 +220,26 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var patPieceStyle = await _context.PatPieceStyle.SingleOrDefaultAsync(m => m.Id == id);
             var oldId = patPieceStyle.PatPieceId;
+            var styleName = "";
+            var patternName = "";
+            foreach (var item in _context.Style)
+            {
+                if (item.Id == patPieceStyle.StyleId)
+                {
+                    styleName = item.Title;
+                }
+            }
+            foreach (var item in _context.PatternPiece)
+            {
+                if (item.Id == patPieceStyle.PatPieceId)
+                {
+                    patternName = item.Title;
+                }
+            }
+            logger.Info(user + " deleted " + styleName + " and " + patternName);
             _context.PatPieceStyle.Remove(patPieceStyle);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details","PatternPieces",new { id = oldId });
