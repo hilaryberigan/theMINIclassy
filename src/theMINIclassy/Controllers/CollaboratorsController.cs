@@ -151,9 +151,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var collaborator = await _context.Collaborator.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted Collaborator " + collaborator.Name);
             _context.Collaborator.Remove(collaborator);
             await _context.SaveChangesAsync();
-            logger.Info(user + " deleted Collaborator " + collaborator.Name);
             return RedirectToAction("Index");
         }
         [Authorize]

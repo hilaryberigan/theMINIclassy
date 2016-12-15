@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class ProductLabelQuantitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public ProductLabelQuantitiesController(ApplicationDbContext context)
+        public ProductLabelQuantitiesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: ProductLabelQuantities
@@ -59,18 +65,42 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,LabelId,ProductId,QtyLabelOnProduct")] ProductLabelQuantity productLabelQuantity)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             productLabelQuantity.ProductId = productLabelQuantity.Id;
             productLabelQuantity.Id = 0;
+            var productName = "";
+            var productQuantity = 0;
+            var labelName = "";
+            decimal labelQuantity = 0;
+            foreach(var item in _context.Product)
+            {
+                if(productLabelQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach(var item in _context.Label)
+            {
+                if(productLabelQuantity.LabelId == item.Id)
+                {
+                    labelName = item.Title;
+                    labelQuantity = item.Quantity;
+                }
+            }
+            
             if (ModelState.IsValid)
             {
                 _context.Add(productLabelQuantity);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + productName + " with quantity of " + productQuantity + " and " + labelName + " with quantity of " + labelQuantity);
                 return RedirectToAction("Index");
             }
             else
             {
                 _context.Add(productLabelQuantity);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + productName + " with quantity of " + productQuantity + " and " + labelName + " with quantity of " + labelQuantity);
                 return RedirectToAction("Details", "Products", new { id = productLabelQuantity.ProductId });
             }
             ViewData["LabelId"] = new SelectList(_context.Label, "Id", "Title", productLabelQuantity.LabelId);
@@ -87,6 +117,27 @@ namespace theMINIclassy.Controllers
             }
 
             var productLabelQuantity = await _context.ProductLabelQuantity.SingleOrDefaultAsync(m => m.Id == id);
+            var productName = "";
+            var productQuantity = 0;
+            var labelName = "";
+            decimal labelQuantity = 0;
+            foreach (var item in _context.Product)
+            {
+                if (productLabelQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach (var item in _context.Label)
+            {
+                if (productLabelQuantity.LabelId == item.Id)
+                {
+                    labelName = item.Title;
+                    labelQuantity = item.Quantity;
+                }
+            }
+            logger.Info("Current " + productName + " with quantity of " + productQuantity + " and " + labelName + " with quantity of " + labelQuantity);
             if (productLabelQuantity == null)
             {
                 return NotFound();
@@ -112,6 +163,28 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    var productName = "";
+                    var productQuantity = 0;
+                    var labelName = "";
+                    decimal labelQuantity = 0;
+                    foreach (var item in _context.Product)
+                    {
+                        if (productLabelQuantity.ProductId == item.Id)
+                        {
+                            productName = item.Title;
+                            productQuantity = item.Quantity;
+                        }
+                    }
+                    foreach (var item in _context.Label)
+                    {
+                        if (productLabelQuantity.LabelId == item.Id)
+                        {
+                            labelName = item.Title;
+                            labelQuantity = item.Quantity;
+                        }
+                    }
+                    logger.Info(user + " edited to " + productName + " with quantity of " + productQuantity + " and " + labelName + " with quantity of " + labelQuantity);
                     _context.Update(productLabelQuantity);
                     await _context.SaveChangesAsync();
                 }
@@ -157,6 +230,28 @@ namespace theMINIclassy.Controllers
         {
             var productLabelQuantity = await _context.ProductLabelQuantity.SingleOrDefaultAsync(m => m.Id == id);
             var productId = productLabelQuantity.ProductId;
+            var user = _userManger.GetUserName(HttpContext.User);
+            var productName = "";
+            var productQuantity = 0;
+            var labelName = "";
+            decimal labelQuantity = 0;
+            foreach (var item in _context.Product)
+            {
+                if (productLabelQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach (var item in _context.Label)
+            {
+                if (productLabelQuantity.LabelId == item.Id)
+                {
+                    labelName = item.Title;
+                    labelQuantity = item.Quantity;
+                }
+            }
+            logger.Info(user + " deleted " + productName + " and " + labelName);
             _context.ProductLabelQuantity.Remove(productLabelQuantity);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Products", new { id = productId });

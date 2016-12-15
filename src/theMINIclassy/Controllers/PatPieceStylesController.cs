@@ -223,8 +223,6 @@ namespace theMINIclassy.Controllers
             var user = _userManger.GetUserName(HttpContext.User);
             var patPieceStyle = await _context.PatPieceStyle.SingleOrDefaultAsync(m => m.Id == id);
             var oldId = patPieceStyle.PatPieceId;
-            _context.PatPieceStyle.Remove(patPieceStyle);
-            await _context.SaveChangesAsync();
             var styleName = "";
             var patternName = "";
             foreach (var item in _context.Style)
@@ -242,6 +240,8 @@ namespace theMINIclassy.Controllers
                 }
             }
             logger.Info(user + " deleted " + styleName + " and " + patternName);
+            _context.PatPieceStyle.Remove(patPieceStyle);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Details","PatternPieces",new { id = oldId });
         }
         [Authorize]

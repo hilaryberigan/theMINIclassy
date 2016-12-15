@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class PatPieceVariationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public PatPieceVariationsController(ApplicationDbContext context)
+        public PatPieceVariationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
 
         // GET: PatPieceVariations
@@ -58,17 +64,36 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PatPieceId,VariationId")] PatPieceVariation patPieceVariation)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
+            var patVariation = "";
+            var patPiece = "";
+            foreach(var item in _context.Variation)
+            {
+                if(patPieceVariation.PatPieceId == item.Id)
+                {
+                    patVariation = item.Title;
+                }
+            }
+            foreach(var item in _context.PatternPiece)
+            {
+                if(patPieceVariation.PatPieceId == item.Id)
+                {
+                    patPiece = item.Title;
+                }
+            }
             patPieceVariation.PatPieceId = patPieceVariation.Id;
             patPieceVariation.Id = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(patPieceVariation);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + patPiece + " and " + patVariation);
                 return RedirectToAction("Details", "PatternPieces", new { id = patPieceVariation.PatPieceId });
             }else
             {
                 _context.Add(patPieceVariation);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + patPiece + " and " + patVariation);
                 return RedirectToAction("Details", "PatternPieces", new { id = patPieceVariation.PatPieceId });
             }
             ViewData["PatPieceId"] = patPieceVariation.PatPieceId;
@@ -85,6 +110,23 @@ namespace theMINIclassy.Controllers
             }
 
             var patPieceVariation = await _context.PatPieceVariation.SingleOrDefaultAsync(m => m.Id == id);
+            var patVariation = "";
+            var patPiece = "";
+            foreach (var item in _context.Variation)
+            {
+                if (patPieceVariation.PatPieceId == item.Id)
+                {
+                    patVariation = item.Title;
+                }
+            }
+            foreach (var item in _context.PatternPiece)
+            {
+                if (patPieceVariation.PatPieceId == item.Id)
+                {
+                    patPiece = item.Title;
+                }
+            }
+            logger.Info("Current Pattern Piece Variation: " + patVariation + " and " + patPiece);
             if (patPieceVariation == null)
             {
                 return NotFound();
@@ -110,8 +152,26 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    var patVariation = "";
+                    var patPiece = "";
+                    foreach (var item in _context.Variation)
+                    {
+                        if (patPieceVariation.PatPieceId == item.Id)
+                        {
+                            patVariation = item.Title;
+                        }
+                    }
+                    foreach (var item in _context.PatternPiece)
+                    {
+                        if (patPieceVariation.PatPieceId == item.Id)
+                        {
+                            patPiece = item.Title;
+                        }
+                    }
                     _context.Update(patPieceVariation);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited to " + patPiece + " and " + patVariation);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -153,8 +213,26 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var patPieceVariation = await _context.PatPieceVariation.SingleOrDefaultAsync(m => m.Id == id);
             var oldId = patPieceVariation.PatPieceId;
+            var patVariation = "";
+            var patPiece = "";
+            foreach (var item in _context.Variation)
+            {
+                if (patPieceVariation.PatPieceId == item.Id)
+                {
+                    patVariation = item.Title;
+                }
+            }
+            foreach (var item in _context.PatternPiece)
+            {
+                if (patPieceVariation.PatPieceId == item.Id)
+                {
+                    patPiece = item.Title;
+                }
+            }
+            logger.Info(user + " deleted " + patPiece + " and " + patVariation);
             _context.PatPieceVariation.Remove(patPieceVariation);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "PatternPieces", new { id = oldId });
