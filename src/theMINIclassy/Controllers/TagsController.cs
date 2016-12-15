@@ -151,9 +151,13 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Tag tag)
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Quantity")] Tag tag)
         {
-            tag.LastUpdated = DateTime.Now;
+            var updateTag = _context.Tag.Where(x => x.Id == id).FirstOrDefault();
+
+            updateTag.LastUpdated = DateTime.Now;
+            updateTag.Quantity = tag.Quantity;
+
             if (id != tag.Id)
             {
                 return NotFound();
@@ -163,7 +167,7 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
-                    _context.Update(tag);
+                    _context.Update(updateTag);
                     await _context.SaveChangesAsync();
                     var user = _userManger.GetUserName(HttpContext.User);
                     logger.Info(user + " edited to " + tag.Quantity);
@@ -179,7 +183,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = tag.Id });
             }
             return View(tag);
         }

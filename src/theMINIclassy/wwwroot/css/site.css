@@ -65,14 +65,23 @@ textarea {
 .navbar-inverse .navbar-brand:hover {
     color: hotpink;
 }
+.navbar-inverse .navbar-brand:active {
+    color: hotpink;
+}
 .navbar-inverse .navbar-nav > li > a:hover {
     color: darkturquoise;
 }
-
+.navbar-inverse .navbar-nav > li > a:active {
+    color: darkturquoise;
+}
 .navbar-inverse .btn-link {
     color: black;
 }
 
 .navbar-inverse .btn-link:hover{
+    color: darkturquoise;
+}
+
+.navbar-inverse .btn-link:active{
     color: darkturquoise;
 }

@@ -33,7 +33,9 @@ namespace theMINIclassy.Controllers
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ApplicationDbContext context
+            )
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -41,6 +43,7 @@ namespace theMINIclassy.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _context = context;
         }
 
         //
