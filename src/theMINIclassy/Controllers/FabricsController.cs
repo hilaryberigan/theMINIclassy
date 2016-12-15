@@ -95,10 +95,13 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Code,Content,Description,LastUpdated,MinThreshold,Quantity,Title")] Fabric fabric)
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id, Quantity")] Fabric fabric)
         {
+            var updateFabric = _context.Fabric.Where(x => x.Id == id).FirstOrDefault();
+            updateFabric.Quantity = fabric.Quantity;
+            updateFabric.LastUpdated = DateTime.Now;
             var user = _userManger.GetUserName(HttpContext.User);
-            fabric.LastUpdated = DateTime.Now;
+
             if (id != fabric.Id)
             {
                 return NotFound();
@@ -108,8 +111,7 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
-                    
-                    _context.Update(fabric);
+                    _context.Update(updateFabric);
                     await _context.SaveChangesAsync();
                     logger.Info(user + " Edited Fabric: " + fabric.Title + " to quantity of: " + fabric.Quantity);
                 }
