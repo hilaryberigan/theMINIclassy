@@ -138,9 +138,11 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Notion notion)
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Quantity")] Notion notion)
         {
-            notion.LastUpdated = DateTime.Now;
+            var updateNotion = _context.Notion.Where(x => x.Id == id).FirstOrDefault();
+            updateNotion.LastUpdated = DateTime.Now;
+            updateNotion.Quantity = notion.Quantity;
             if (id != notion.Id)
             {
                 return NotFound();
@@ -150,7 +152,7 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
-                    _context.Update(notion);
+                    _context.Update(updateNotion);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -164,7 +166,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = notion.Id });
             }
             return View(notion);
         }

@@ -139,9 +139,12 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Description,LastUpdated,MinThreshold,Quantity,Title")] Label label)
+        public async Task<IActionResult> EditQuantity(int id, [Bind("Id,Quantity")] Label label)
         {
-            label.LastUpdated = DateTime.Now;
+            var updateLabel = _context.Label.Where(x => x.Id == id).FirstOrDefault();
+            updateLabel.LastUpdated = DateTime.Now;
+            updateLabel.Quantity = label.Quantity;
+
             if (id != label.Id)
             {
                 return NotFound();
@@ -151,7 +154,7 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
-                    _context.Update(label);
+                    _context.Update(updateLabel);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -165,7 +168,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = label.Id });
             }
             return View(label);
         }

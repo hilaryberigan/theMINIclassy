@@ -261,8 +261,11 @@ namespace theMINIclassy.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProductQuantity(int id, [Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product)
+        public async Task<IActionResult> EditProductQuantity(int id, [Bind("Id,Quantity")] Product product)
         {
+            var updateProd = _context.Product.Where(x => x.Id == product.Id).FirstOrDefault();
+            updateProd.Quantity = product.Quantity;
+
             if (id != product.Id)
             {
                 return NotFound();
@@ -272,7 +275,7 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(updateProd);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -286,7 +289,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = product.Id });
             }
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);

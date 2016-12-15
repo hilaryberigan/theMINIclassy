@@ -6,19 +6,12 @@ namespace theMINIclassy.Models
 {
     public class OrderViewModel
     {
-        public int Id { get; set; }
+        public Order Order { get; set; }  
 
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public List<ProductQuantity> PQuantities { get; set; }
 
-        public int OrderNumber { get; set; }
+        public List<Product> Products { get; set; }
 
-        public string OriginatedFrom { get; set; }
-
-        public string OrderStatus { get; set; }
-
-        public int CustomerId { get; set; }
-
-        public IEnumerable<string> Products { get; set; }
     }
     public class StyleViewModel
     {

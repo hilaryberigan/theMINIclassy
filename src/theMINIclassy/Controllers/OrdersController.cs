@@ -9,6 +9,7 @@ using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace theMINIclassy.Controllers
 {
     public class OrdersController : Controller
@@ -41,7 +42,19 @@ namespace theMINIclassy.Controllers
                 return NotFound();
             }
 
-            return View(order);
+            List<ProductQuantity> ProdQuants = new List<ProductQuantity>();
+            foreach (var item in _context.ProductQuantity.Where(x => x.Order.Id == id).ToList())
+            {
+                ProdQuants.Add(item);
+            }
+
+            var model = new OrderViewModel
+            {
+                Order = order,
+                PQuantities = ProdQuants,            
+            };
+
+            return View(model);
         }
         [Authorize]
         // GET: Orders/Create
@@ -63,14 +76,14 @@ namespace theMINIclassy.Controllers
             {
                 _context.Add(order);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Orders", new { id = order.Id });
             }
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id", order.CustomerId);
             return View(order);
         }
         [Authorize]
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, List<Product> conflictProds)
         {
             if (id == null)
             {
@@ -82,9 +95,41 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
+
+            List <Product> noConflicts = new List<Product>();
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id", order.CustomerId);
+            ViewData["ConflictProds"] = conflictProds.Any() ? conflictProds : noConflicts;
+
             return View(order);
         }
+
+        public async Task<List<Product>> UpdateProducts( Order order)
+        {
+            var prodOrd = _context.ProductQuantity.Where(x => x.Order.Id == order.Id).ToList();
+            List<Product> productsOnOrder = new List<Product>();
+            List<Product> conflictProds = new List<Product>();
+            foreach (var item in prodOrd)
+            {
+                productsOnOrder.Add(item.Product);
+                var savedProduct = _context.Product.Where(x => x.Id == item.Product.Id).FirstOrDefault();
+                if (item.QtyProductOnOrder > savedProduct.Quantity)
+                {
+                    conflictProds.Add(item.Product);
+                }
+                else
+                {
+                    savedProduct.Quantity -= item.QtyProductOnOrder;
+                    if (ModelState.IsValid)
+                    {
+                       _context.Update(savedProduct);
+                       await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return conflictProds;
+        }
+
         [Authorize]
         // POST: Orders/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -93,6 +138,14 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,OrderDate,OrderNumber,OrderStatus,OriginatedFrom")] Order order)
         {
+
+            List<Product> conflictProds = await UpdateProducts(order);
+            if (conflictProds.Any())
+            {
+                return RedirectToAction("Edit", conflictProds);
+            }
+
+
             if (id != order.Id)
             {
                 return NotFound();

@@ -1,4 +1,4 @@
-@model theMINIclassy.Models.Order
+@model theMINIclassy.Models.OrderViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,35 +11,59 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.OrderDate)
+            @Html.DisplayNameFor(model => model.Order.OrderDate)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrderDate)
+            @Html.DisplayFor(model => model.Order.OrderDate)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrderNumber)
+            @Html.DisplayNameFor(model => model.Order.OrderNumber)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrderNumber)
+            @Html.DisplayFor(model => model.Order.OrderNumber)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OrderStatus)
+            @Html.DisplayNameFor(model => model.Order.OrderStatus)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OrderStatus)
+            @Html.DisplayFor(model => model.Order.OrderStatus)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.OriginatedFrom)
+            @Html.DisplayNameFor(model => model.Order.OriginatedFrom)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.OriginatedFrom)
+            @Html.DisplayFor(model => model.Order.OriginatedFrom)
         </dd>
     </dl>
-</div>
-<div>
+    @if (Model.PQuantities != null)
+    {
+        <dt>Fabric(s)</dt>
+            @foreach (var item in Model.PQuantities)
+            {
+                foreach (var x in Model.Products)
+                {
+                    if (x.Id == Model.Order.Id)
+                    { 
+                        <dd>@item.QtyProductOnOrder <strong> of</strong> @x.Title | 
+                    
+                        if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <a asp-controller="ProductQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-controller="ProductQuantities" asp-action="Delete" asp-route-id="@item.Id"> Delete </a></dd>
+                    }
+                  }
+                }
+             }
+    </div>
+    <div>
+        <a asp-controller="ProductQuantities" asp-action="Create" asp-route-id="@Model.Order.Id"><h5>ADD PRODUCT ITEM & QUANTITY</h5></a>
+    </div>
+
+
+
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit |</a>
+        <a asp-action="Edit" asp-route-id="@Model.Order.Id">Make Changes </a>
     }
     <a asp-action="Index">Back to List</a>
 </div>
