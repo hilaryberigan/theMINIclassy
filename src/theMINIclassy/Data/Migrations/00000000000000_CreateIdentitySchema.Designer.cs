@@ -13,7 +13,7 @@ namespace theMINIclassy.Data.Migrations
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected  void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc3")
