@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public TagsController(ApplicationDbContext context)
+        public TagsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Tags
@@ -61,6 +67,8 @@ namespace theMINIclassy.Controllers
             {
                 _context.Add(tag);
                 await _context.SaveChangesAsync();
+                var user = _userManger.GetUserName(HttpContext.User);
+                logger.Info(user + " created " + tag.Title);
                 return RedirectToAction("Index");
             }
             return View(tag);
@@ -75,6 +83,7 @@ namespace theMINIclassy.Controllers
             }
 
             var tag = await _context.Tag.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Tag Title " + tag.Title);
             if (tag == null)
             {
                 return NotFound();
@@ -102,6 +111,8 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(tag);
                     await _context.SaveChangesAsync();
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    logger.Info(user + " edited to " + tag.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -127,6 +138,7 @@ namespace theMINIclassy.Controllers
             }
 
             var tag = await _context.Tag.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current quantity " + tag.Quantity);
             if (tag == null)
             {
                 return NotFound();
@@ -153,6 +165,8 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(tag);
                     await _context.SaveChangesAsync();
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    logger.Info(user + " edited to " + tag.Quantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -193,6 +207,8 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var tag = await _context.Tag.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _userManger.GetUserName(HttpContext.User);
+            logger.Info(user + " deleted " + tag.Title);
             _context.Tag.Remove(tag);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

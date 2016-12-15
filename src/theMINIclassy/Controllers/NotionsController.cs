@@ -207,9 +207,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var notion = await _context.Notion.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted " + notion.Title);
             _context.Notion.Remove(notion);
             await _context.SaveChangesAsync();
-            logger.Info(user + " deleted " + notion.Title);
             return RedirectToAction("Index");
         }
         [Authorize]

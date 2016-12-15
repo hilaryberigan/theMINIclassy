@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class VariationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public VariationsController(ApplicationDbContext context)
+        public VariationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Variations
@@ -60,6 +66,8 @@ namespace theMINIclassy.Controllers
             {
                 _context.Add(variation);
                 await _context.SaveChangesAsync();
+                var user = _userManger.GetUserName(HttpContext.User);
+                logger.Info(user + " created " + variation.Title);
                 return RedirectToAction("Index");
             }
             return View(variation);
@@ -74,6 +82,7 @@ namespace theMINIclassy.Controllers
             }
 
             var variation = await _context.Variation.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Variation Title " + variation.Title);
             if (variation == null)
             {
                 return NotFound();
@@ -99,6 +108,8 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(variation);
                     await _context.SaveChangesAsync();
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    logger.Info(user + " edited to " + variation.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,6 +150,8 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var variation = await _context.Variation.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _userManger.GetUserName(HttpContext.User);
+            logger.Info(user + " deleted " + variation.Title);
             _context.Variation.Remove(variation);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

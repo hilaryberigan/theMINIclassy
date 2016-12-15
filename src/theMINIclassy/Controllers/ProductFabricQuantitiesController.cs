@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class ProductFabricQuantitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public ProductFabricQuantitiesController(ApplicationDbContext context)
+        public ProductFabricQuantitiesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: ProductFabricQuantities
@@ -59,18 +65,41 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FabricId,ProductId,QtyFabricOnProduct")] ProductFabricQuantity productFabricQuantity)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var x = productFabricQuantity.Id;
             productFabricQuantity.ProductId = x;
             productFabricQuantity.Id = 0;
+            var productName = "";
+            var productQuantity = 0;
+            var fabricName = "";
+            decimal fabricQuantity = 0;
+            foreach(var item in _context.Product)
+            {
+                if(productFabricQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach(var item in _context.Fabric)
+            {
+                if(productFabricQuantity.FabricId == item.Id)
+                {
+                    fabricName = item.Title;
+                    fabricQuantity = item.Quantity;
+                }
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(productFabricQuantity);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + productName + " with quantity of " + productQuantity + " and " + fabricName + " with quantity of " + fabricQuantity);
                 return RedirectToAction("Index");
             }else
             {
                 _context.Add(productFabricQuantity);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + productName + " with quantity of " + productQuantity + " and " + fabricName + " with quantity of " + fabricQuantity);
                 return RedirectToAction("Details", "Products", new { id = productFabricQuantity.ProductId });
             }
             ViewData["FabricId"] = new SelectList(_context.Fabric, "Id", "Title", productFabricQuantity.FabricId);
@@ -87,6 +116,27 @@ namespace theMINIclassy.Controllers
             }
 
             var productFabricQuantity = await _context.ProductFabricQuantity.SingleOrDefaultAsync(m => m.Id == id);
+            var productName = "";
+            var productQuantity = 0;
+            var fabricName = "";
+            decimal fabricQuantity = 0;
+            foreach (var item in _context.Product)
+            {
+                if (productFabricQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach (var item in _context.Fabric)
+            {
+                if (productFabricQuantity.FabricId == item.Id)
+                {
+                    fabricName = item.Title;
+                    fabricQuantity = item.Quantity;
+                }
+            }
+            logger.Info("Current " + productName + " quantity " + productQuantity + " and " + fabricName + " quantity " + fabricQuantity);
             if (productFabricQuantity == null)
             {
                 return NotFound();
@@ -114,8 +164,30 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var user = _userManger.GetUserName(HttpContext.User);
+                    var productName = "";
+                    var productQuantity = 0;
+                    var fabricName = "";
+                    decimal fabricQuantity = 0;
+                    foreach (var item in _context.Product)
+                    {
+                        if (productFabricQuantity.ProductId == item.Id)
+                        {
+                            productName = item.Title;
+                            productQuantity = item.Quantity;
+                        }
+                    }
+                    foreach (var item in _context.Fabric)
+                    {
+                        if (productFabricQuantity.FabricId == item.Id)
+                        {
+                            fabricName = item.Title;
+                            fabricQuantity = item.Quantity;
+                        }
+                    }
                     _context.Update(productFabricQuantity);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited to " + productName + " quantity " + productQuantity + " and " + fabricName + " quantity " + fabricQuantity);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -158,6 +230,28 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var productFabricQuantity = await _context.ProductFabricQuantity.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _userManger.GetUserName(HttpContext.User);
+            var productName = "";
+            var productQuantity = 0;
+            var fabricName = "";
+            decimal fabricQuantity = 0;
+            foreach (var item in _context.Product)
+            {
+                if (productFabricQuantity.ProductId == item.Id)
+                {
+                    productName = item.Title;
+                    productQuantity = item.Quantity;
+                }
+            }
+            foreach (var item in _context.Fabric)
+            {
+                if (productFabricQuantity.FabricId == item.Id)
+                {
+                    fabricName = item.Title;
+                    fabricQuantity = item.Quantity;
+                }
+            }
+            logger.Info(user + " deleted " + productName + " and " + fabricName);
             var productId = productFabricQuantity.ProductId;
             _context.ProductFabricQuantity.Remove(productFabricQuantity);
             await _context.SaveChangesAsync();

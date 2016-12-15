@@ -160,9 +160,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var collection = await _context.Collection.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted Collection: " + collection.Title);
             _context.Collection.Remove(collection);
             await _context.SaveChangesAsync();
-            logger.Info(user + " deleted Collection: " + collection.Title);
             return RedirectToAction("Index");
         }
         [Authorize]

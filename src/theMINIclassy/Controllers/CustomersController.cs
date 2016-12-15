@@ -157,9 +157,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var customer = await _context.Customer.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted Customer: " + customer.Name);
             _context.Customer.Remove(customer);
             await _context.SaveChangesAsync();
-            logger.Info(user + " deleted Customer: " + customer.Name);
             return RedirectToAction("Index");
         }
         [Authorize]

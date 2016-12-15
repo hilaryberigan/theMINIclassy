@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class SeasonsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public SeasonsController(ApplicationDbContext context)
+        public SeasonsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Seasons
@@ -58,6 +64,8 @@ namespace theMINIclassy.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = _userManger.GetUserName(HttpContext.User);
+                logger.Info(user + " created " + season.Title);
                 _context.Add(season);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -74,6 +82,7 @@ namespace theMINIclassy.Controllers
             }
 
             var season = await _context.Season.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Season Title " + season.Title);
             if (season == null)
             {
                 return NotFound();
@@ -97,8 +106,11 @@ namespace theMINIclassy.Controllers
             {
                 try
                 {
+                    var user = _userManger.GetUserName(HttpContext.User);
+
                     _context.Update(season);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited to " + season.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,6 +151,8 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var season = await _context.Season.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _userManger.GetUserName(HttpContext.User);
+            logger.Info(user + " deleted " + season.Title);
             _context.Season.Remove(season);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

@@ -208,9 +208,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var label = await _context.Label.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted " + label.Title);
             _context.Label.Remove(label);
             await _context.SaveChangesAsync();
-            logger.Info(user + " deleted " + label.Title);
             return RedirectToAction("Index");
         }
         [Authorize]

@@ -9,6 +9,9 @@ using theMINIclassy.Data;
 using theMINIclassy.Models;
 using Microsoft.AspNetCore.Authorization;
 using theMINIclassy.Models.ManageViewModels;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace theMINIclassy.Controllers
@@ -16,10 +19,13 @@ namespace theMINIclassy.Controllers
     public class PatternPiecesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
-        public PatternPiecesController(ApplicationDbContext context)
+        public PatternPiecesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: PatternPieces
@@ -86,10 +92,13 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title")] PatternPiece patternPiece)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (ModelState.IsValid)
             {
+
                 _context.Add(patternPiece);
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created Pattern Piece: " + patternPiece.Title);
                 return RedirectToAction("Details","PatternPieces",new { id = patternPiece.Id });
             }
             return View(patternPiece);
@@ -104,6 +113,7 @@ namespace theMINIclassy.Controllers
             }
 
             var patternPiece = await _context.PatternPiece.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current Pattern Piece " + patternPiece.Title);
             if (patternPiece == null)
             {
                 return NotFound();
@@ -118,6 +128,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] PatternPiece patternPiece)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != patternPiece.Id)
             {
                 return NotFound();
@@ -129,6 +140,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(patternPiece);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited to " + patternPiece.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -168,7 +180,9 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var patternPiece = await _context.PatternPiece.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted " + patternPiece.Title);
             _context.PatternPiece.Remove(patternPiece);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

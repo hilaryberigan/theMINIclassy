@@ -212,9 +212,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var fabric = await _context.Fabric.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted: " + fabric.Title);
             _context.Fabric.Remove(fabric);
             await _context.SaveChangesAsync();
-            logger.Info(user + "deleted: " + fabric.Title);
             return RedirectToAction("Index");
         }
         [Authorize]

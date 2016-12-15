@@ -176,8 +176,6 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var order = await _context.Order.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Order.Remove(order);
-            await _context.SaveChangesAsync();
             var customerName = "";
 
             foreach (var item in _context.Customer)
@@ -188,6 +186,8 @@ namespace theMINIclassy.Controllers
                 }
             }
             logger.Info(user + " deleted order number " + order.OrderNumber + " for customer " + customerName);
+            _context.Order.Remove(order);
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
         [Authorize]

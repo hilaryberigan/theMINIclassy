@@ -156,9 +156,9 @@ namespace theMINIclassy.Controllers
         {
             var user = _userManger.GetUserName(HttpContext.User);
             var address = await _context.Address.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted " + address.GetFullAddr);
             _context.Address.Remove(address);
             await _context.SaveChangesAsync();
-            logger.Info(user + " deleted " + address.GetFullAddr);
             return RedirectToAction("Index");
         }
 
