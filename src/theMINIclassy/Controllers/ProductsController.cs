@@ -405,30 +405,34 @@ namespace theMINIclassy.Controllers
                     }
                     else
                     {
+                        oldProduct.Quantity = product.Quantity;
+                        _context.Update(oldProduct);
+                        await _context.SaveChangesAsync();
                         //actions dictionary: key: title && value:action
                         Dictionary<string, string> actionDict = new Dictionary<string, string>();
+                        actionDict.Add(oldProduct.Title, "Product quantity has been updated to " + oldProduct.Quantity);
                         foreach(var item in fabricDict.Keys)
                         {
-                            foreach(var fabric in _context.Fabric)
+                            foreach(var fabric in _context.Fabric.ToList())
                             {
                                 if(item == fabric.Id)
                                 {
                                     fabric.Quantity = fabricDict[item];
-                                    _context.Update(fabric);
+                                    _context.Fabric.Update(fabric);
                                     await _context.SaveChangesAsync();
-                                    if(fabric.Quantity <= fabric.MinThreshold)
+                                    if (fabric.Quantity <= fabric.MinThreshold)
                                     {
                                         actionDict.Add(fabric.Title, "Fabric quantity updated, but stock is low: " + fabric.Quantity);
                                     }else
                                     {
-                                        actionDict.Add(fabric.Title, "Updated quantity is not at: " + fabric.Quantity);
+                                        actionDict.Add(fabric.Title, "Updated quantity is now at: " + fabric.Quantity);
                                     }
                                 }
                             }
                         }
                         foreach (var item in notionDict.Keys)
                         {
-                            foreach (var notion in _context.Notion)
+                            foreach (var notion in _context.Notion.ToList())
                             {
                                 if (item == notion.Id)
                                 {
@@ -441,14 +445,14 @@ namespace theMINIclassy.Controllers
                                     }
                                     else
                                     {
-                                        actionDict.Add(notion.Title, "Updated quantity is not at: " + notion.Quantity);
+                                        actionDict.Add(notion.Title, "Updated quantity is now at: " + notion.Quantity);
                                     }
                                 }
                             }
                         }
                         foreach (var item in labelDict.Keys)
                         {
-                            foreach (var label in _context.Label)
+                            foreach (var label in _context.Label.ToList())
                             {
                                 if (item == label.Id)
                                 {
@@ -461,14 +465,14 @@ namespace theMINIclassy.Controllers
                                     }
                                     else
                                     {
-                                        actionDict.Add(label.Title, "Updated quantity is not at: " + label.Quantity);
+                                        actionDict.Add(label.Title, "Updated quantity is now at: " + label.Quantity);
                                     }
                                 }
                             }
                         }
                         foreach (var item in tagDict.Keys)
                         {
-                            foreach (var tag in _context.Tag)
+                            foreach (var tag in _context.Tag.ToList())
                             {
                                 if (item == tag.Id)
                                 {
@@ -481,14 +485,18 @@ namespace theMINIclassy.Controllers
                                     }
                                     else
                                     {
-                                        actionDict.Add(tag.Title, "Updated quantity is not at: " + tag.Quantity);
+                                        actionDict.Add(tag.Title, "Updated quantity is now at: " + tag.Quantity);
                                     }
                                 }
                             }
                         }
+                        string actionStr = "";
+                        foreach (var item in actionDict.Keys)
+                        {
+                            actionStr += item + " -- " + actionDict[item] + "&&";
+                        }
+                        return RedirectToAction("Success", new { prodId = product.Id, actionStr = actionStr.Substring(0, actionStr.Length - 2) });
                     }
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -507,6 +515,24 @@ namespace theMINIclassy.Controllers
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
             return View(product);
+        }
+        public IActionResult Success(int prodId,string actionStr)
+        {
+            string[] tempArray = actionStr.Split(new string[] { "&&" }, StringSplitOptions.None);
+            Product tempProd = new Product();
+            foreach(var item in _context.Product)
+            {
+                if(item.Id == prodId)
+                {
+                    tempProd = item;
+                }
+            }
+            var model = new ExceptionViewModel
+            {
+                Product = tempProd,
+                errors = tempArray
+            };
+            return View(model);
         }
         public IActionResult Error(int prodId,string exceptStr)
         {
