@@ -8,8 +8,8 @@ using theMINIclassy.Data;
 namespace theMINIclassy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161214234913_initial")]
-    partial class initial
+    [Migration("20161215002340_initial3")]
+    partial class initial3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

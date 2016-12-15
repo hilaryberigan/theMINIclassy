@@ -1,0 +1,14 @@
+﻿@model theMINIclassy.Models.ManageViewModels.ExceptionViewModel
+
+<h1>Success!</h1>
+<br />
+<h3>Product @Model.Product.Title has been updated.</h3>
+<br />
+<h5>Actions:</h5>
+<br />
+<ul>
+    @foreach (var item in Model.errors)
+    {
+        <li><strong>@item</strong></li>
+    }
+</ul>

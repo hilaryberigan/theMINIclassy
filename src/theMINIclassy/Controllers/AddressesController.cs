@@ -73,7 +73,7 @@ namespace theMINIclassy.Controllers
                 _context.Add(address);
                 await _context.SaveChangesAsync();
                 logger.Info(user + " Created new Address" + address.GetFullAddr);
-                return RedirectToAction("Create", "Customers");
+                return RedirectToAction("Index");
             }
             return View(address);
         }
