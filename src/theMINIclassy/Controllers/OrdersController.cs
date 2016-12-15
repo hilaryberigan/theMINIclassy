@@ -53,7 +53,7 @@ namespace theMINIclassy.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id");
+            ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Name");
             return View();
         }
         [Authorize]
@@ -81,6 +81,11 @@ namespace theMINIclassy.Controllers
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 logger.Info(user + " created new order for " + customerName);
+                return RedirectToAction("Index");
+            }else
+            {
+                _context.Add(order);
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             ViewData["CustomerId"] = new SelectList(_context.Customer, "Id", "Id", order.CustomerId);
