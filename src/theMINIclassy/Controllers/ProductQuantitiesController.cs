@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using theMINIclassy.Models.ManageViewModels;
 
 namespace theMINIclassy.Controllers
 {
@@ -46,8 +47,8 @@ namespace theMINIclassy.Controllers
         // GET: ProductQuantities/Create
         public IActionResult Create()
         {
-            ViewData["OrderId"] = new SelectList(_context.Order, "Id", "Id");
-            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id");
+            ViewData["OrderId"] = new SelectList(_context.Order, "Id", "OrderNumber");
+            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Title");
             return View();
         }
 
@@ -58,17 +59,66 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OrderId,ProductId,QtyProductOnOrder")] ProductQuantity productQuantity)
         {
+            productQuantity.OrderId = productQuantity.Id;
+            productQuantity.Id = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(productQuantity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
+            }else
+            {
+                Dictionary<string, string> actionDict = new Dictionary<string, string>();
+                int ID = 0;
+                foreach(var item in _context.Product.ToList())
+                {
+                    if(item.Id == productQuantity.ProductId)
+                    {
+                        int temp = item.Quantity - productQuantity.QtyProductOnOrder;
+                        if(temp > 0)
+                        {
+                            item.Quantity = temp;
+                            ID = item.Id;
+                            _context.Add(item);
+                            await _context.SaveChangesAsync();
+                            _context.Add(productQuantity);
+                            await _context.SaveChangesAsync();
+                            actionDict.Add(item.Title, "Product quantity decreased to " + item.Quantity + "&&");
+                        }else
+                        {
+                            actionDict.Add(item.Title, "Not enough of this product to make order. Product quantity not updated and product not added to order.&&");
+                        }
+                    }
+                }
+                string temp2 = "";
+                foreach(var item in actionDict.Keys)
+                {
+                    temp2 += item + " - " + actionDict[item];
+                }
+                return RedirectToAction("Result",new { id = ID, actionStr = temp2 });
             }
-            ViewData["OrderId"] = new SelectList(_context.Order, "Id", "Id", productQuantity.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productQuantity.ProductId);
+            ViewData["OrderId"] = new SelectList(_context.Order, "Id", "OrderNumber", productQuantity.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Title", productQuantity.ProductId);
             return View(productQuantity);
         }
-
+        public IActionResult Result(int id,string actionStr)
+        {
+            Product tempProd = new Product();
+            string[] tempArray = actionStr.Split(new string[] { "&&" }, StringSplitOptions.None);
+            foreach (var item in _context.Product.ToList())
+            {
+                if(id == item.Id)
+                {
+                    tempProd = item;
+                }
+            }
+            var model = new ExceptionViewModel
+            {
+                errors = tempArray,
+                Product = tempProd
+            };
+            return View();
+        }
         // GET: ProductQuantities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -82,8 +132,8 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.Order, "Id", "Id", productQuantity.OrderId);
-            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productQuantity.ProductId);
+            ViewData["OrderId"] = new SelectList(_context.Order, "Id", "OrderNumber", productQuantity.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Title", productQuantity.ProductId);
             return View(productQuantity);
         }
 

@@ -1,0 +1,17 @@
+﻿@model theMINIclassy.Models.ManageViewModels.ExceptionViewModel
+
+
+<h1>Order Result</h1>
+<br />
+<h3>Generated message while making the order.</h3>
+<br />
+<h5>Messages:</h5>
+<br />
+<ul>
+    @foreach (var item in Model.errors)
+    {
+        <li><strong>@item</strong></li>
+    }
+</ul>
+<br />
+<a asp-action="Index">Back to List</a>

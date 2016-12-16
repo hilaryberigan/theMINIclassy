@@ -11,10 +11,9 @@
         <h4>ProductQuantity</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-            <label asp-for="OrderId" class="col-md-2 control-label"></label>
+        <div class="form-group" hidden>
             <div class="col-md-10">
-                <select asp-for="OrderId" class ="form-control" asp-items="ViewBag.OrderId"></select>
+                <input type="hidden" name="OrderId" class="form-control" value="OrderId" />
             </div>
         </div>
         <div class="form-group">
@@ -39,7 +38,7 @@
 </form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Orders" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
