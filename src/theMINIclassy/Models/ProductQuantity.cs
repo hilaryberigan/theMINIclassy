@@ -24,7 +24,7 @@ namespace theMINIclassy.Models
 
         public Order Order { get; set; }
 
-        [Display(Name = "Qty Product on Order")]
+        [Display(Name = "Quantity of Product")]
         public int QtyProductOnOrder { get; set; }
 
     }
