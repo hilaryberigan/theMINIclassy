@@ -8,8 +8,8 @@ using theMINIclassy.Data;
 namespace theMINIclassy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161215002340_initial3")]
-    partial class initial3
+    [Migration("20161216160308_imagepath")]
+    partial class imagepath
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -285,6 +285,22 @@ namespace theMINIclassy.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fabric");
+                });
+
+            modelBuilder.Entity("theMINIclassy.Models.ImagePath", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FilePath");
+
+                    b.Property<int?>("ProductId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ImagePath");
                 });
 
             modelBuilder.Entity("theMINIclassy.Models.Label", b =>
@@ -663,6 +679,13 @@ namespace theMINIclassy.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("theMINIclassy.Models.ImagePath", b =>
+                {
+                    b.HasOne("theMINIclassy.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("theMINIclassy.Models.Order", b =>
