@@ -7,7 +7,12 @@
 {
     @await Html.PartialAsync("_PartialAdminHome");
 }
-else
+else if(User.IsInRole("Manager"))
 {
     @await Html.PartialAsync("_PartialManagerHome");
+}
+else
+{
+    @await Html.PartialAsync("_PartialEmployeeHome");
+
 }
