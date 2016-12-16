@@ -1,0 +1,25 @@
+﻿@model theMINIclassy.Models.LogsViewModel
+<script src="~/js/custom.js"></script>
+<div id="logFileName">
+<ol>
+    @{ 
+        List<SelectListItem> logList = new List<SelectListItem>();
+
+foreach(var item in Model.LogFileNames.Keys)
+{
+    if (item.Contains("changes"))
+    {
+        logList.Add(new SelectListItem { Text = @item });
+        @*<li><button onclick="readLogs(@item, @Model.LogFileNames[item])">@item</button></li>*@
+        
+    }
+
+}
+    }
+    @Html.DropDownListFor(model => model.LogFileNames.Keys, logList, "---Select Logs---")
+</ol>
+</div>
+<div id="showLog">
+
+
+</div>

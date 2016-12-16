@@ -6,16 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using theMINIclassy.Models;
 using theMINIclassy.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+
 
 namespace theMINIclassy.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private IHostingEnvironment _environment;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IHostingEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         [Authorize]
         public IActionResult Index()
@@ -40,6 +45,45 @@ namespace theMINIclassy.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        [Authorize]
+        public IActionResult Log()
+        {
+            ViewData["Logs"] = DateTime.UtcNow.Date.ToString();
+            DirectoryInfo d = new DirectoryInfo(_environment.WebRootPath + "\\nlogs");//Assuming Test is your Folder
+            FileInfo[] Files = d.GetFiles("*.log"); //Getting Text files
+            string str = "";
+            //List<string> list = new List<string>();
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+            foreach (FileInfo file in Files)
+            {
+                str = file.Name;
+                StreamReader sr = new StreamReader(GenerateStreamFromString(file.Name));
+                var logText = "";
+                while(sr.Peek() >= 0)
+                {
+                    logText += sr.ReadLine() + '@';
+
+                }
+                dict.Add(str, logText);
+                //list.Add(Convert.ToString(file));
+            }
+            var model = new LogsViewModel
+            {
+                LogFileNames = dict
+            };
+            return View(model);
+        }
+
+        public Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
         [Authorize]
         public IActionResult SupplyInventory(string sortOrder, string searchString)

@@ -39,6 +39,9 @@ namespace theMINIclassy.Models
         public string Type { get; set; }
         public string Measure { get; set; }
     }
-
+    public class LogsViewModel
+    {
+        public Dictionary<string, string> LogFileNames { get; set; }
+    }
 
 }

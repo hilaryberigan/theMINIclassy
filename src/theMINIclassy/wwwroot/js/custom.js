@@ -25,5 +25,13 @@ function GetTitle(id, list) {
     return id;
 }
 
+function readLogs(fileName, logText) {
+    document.getElementById('logFileName').style.display = 'none';
+    document.getElementById('showLog').style.display = '';
 
+    var logArray = logText.split('@');
+    for(var item in logArray){
+        $('#showLog').append(item);
+    }
+}
 
