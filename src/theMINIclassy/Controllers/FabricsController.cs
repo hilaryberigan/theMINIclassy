@@ -126,7 +126,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", new { id = fabric.Id });
+                return RedirectToAction("SupplyInventory", "Home", new { id = fabric.Id });
             }
             return View(fabric);
         }

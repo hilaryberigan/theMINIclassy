@@ -182,7 +182,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", new { id = notion.Id });
+                return RedirectToAction("SupplyInventory", "Home", new { id = notion.Id });
             }
             return View(notion);
         }

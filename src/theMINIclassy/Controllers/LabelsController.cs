@@ -184,7 +184,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Details", new { id = label.Id });
+                return RedirectToAction("SupplyInventory", "Home", new { id = label.Id });
             }
             return View(label);
         }
