@@ -99,7 +99,7 @@ namespace theMINIclassy.Controllers
                 _context.Add(patternPiece);
                 await _context.SaveChangesAsync();
                 logger.Info(user + " created Pattern Piece: " + patternPiece.Title);
-                return RedirectToAction("Details","PatternPieces",new { id = patternPiece.Id });
+                //return RedirectToAction("Details","PatternPieces",new { id = patternPiece.Id });
             }
             return View(patternPiece);
         }

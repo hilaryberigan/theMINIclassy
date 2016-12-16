@@ -52,9 +52,13 @@ namespace theMINIclassy.Controllers
         // GET: PatPieceVariations/Create
         public IActionResult Create(int? id)
         {
-            ViewData["PatPieceId"] = id;
-            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Title");
-            return View();
+           
+            PatPieceVariation model = new PatPieceVariation
+            {
+                VariationId = id ?? default(int),
+            };
+            ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Title");
+            return View(model);
         }
 
         // POST: PatPieceVariations/Create
@@ -65,39 +69,33 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> Create([Bind("Id,PatPieceId,VariationId")] PatPieceVariation patPieceVariation)
         {
             var user = _userManger.GetUserName(HttpContext.User);
-            var patVariation = "";
-            var patPiece = "";
-            foreach(var item in _context.Variation)
-            {
-                if(patPieceVariation.PatPieceId == item.Id)
-                {
-                    patVariation = item.Title;
-                }
-            }
-            foreach(var item in _context.PatternPiece)
-            {
-                if(patPieceVariation.PatPieceId == item.Id)
-                {
-                    patPiece = item.Title;
-                }
-            }
-            patPieceVariation.PatPieceId = patPieceVariation.Id;
             patPieceVariation.Id = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(patPieceVariation);
                 await _context.SaveChangesAsync();
-                logger.Info(user + " created " + patPiece + " and " + patVariation);
-                return RedirectToAction("Details", "PatternPieces", new { id = patPieceVariation.PatPieceId });
-            }else
-            {
-                _context.Add(patPieceVariation);
-                await _context.SaveChangesAsync();
-                logger.Info(user + " created " + patPiece + " and " + patVariation);
-                return RedirectToAction("Details", "PatternPieces", new { id = patPieceVariation.PatPieceId });
+                var variationName = "";
+                var patternName = "";
+
+                foreach (var item in _context.Style)
+                {
+                    if (item.Id == patPieceVariation.VariationId)
+                    {
+                        variationName = item.Title;
+                    }
+                }
+                foreach (var item in _context.PatternPiece)
+                {
+                    if (item.Id == patPieceVariation.PatPieceId)
+                    {
+                        patternName = item.Title;
+                    }
+                }
+                logger.Info(user + " added " + patternName + " to " + variationName);
+                return RedirectToAction("Details", "Variations", new { id = patPieceVariation.VariationId });
             }
             ViewData["PatPieceId"] = patPieceVariation.PatPieceId;
-            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Title", patPieceVariation.VariationId);
+            ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Title");
             return View(patPieceVariation);
         }
 

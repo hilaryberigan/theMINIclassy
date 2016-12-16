@@ -1,4 +1,4 @@
-@model theMINIclassy.Models.Variation
+@model theMINIclassy.Models.ManageViewModels.PatPieceViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,23 +11,47 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Code)
+            @Html.DisplayNameFor(model => model.Variation.Code)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Code)
+            @Html.DisplayFor(model => model.Variation.Code)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Variation.Title)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Variation.Title)
         </dd>
+        @if (Model.PatPieceVariations != null)
+        {
+            <dt>Pattern Piece(s)</dt>
+            @foreach (var item in Model.PatPieceVariations)
+            {
+                foreach (var x in Model.PatPieces)
+                {
+                    if (x.Id == item.PatPieceId)
+                    {
+                        <dd>@x.Title | <a asp-controller="PatPieceVariations" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="PatPieceVariations" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
+                    }
+
+                }
+            }
+        }
+
+
     </dl>
 </div>
+
+
 <div>
+    <a asp-controller="PatPieceVariations" asp-action="Create" asp-route-id="@Model.Variation.Id"><h5>ADD PATTERN PIECE</h5></a>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit |</a>
+        <a asp-action="Edit" asp-route-id="@Model.Variation.Id">Edit |</a>
     }
     <a asp-action="Index">Back to List</a>
+</div>
+
+    </dl>
+
 </div>
