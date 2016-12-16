@@ -12,19 +12,25 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using Microsoft.AspNetCore.Identity;
 
 namespace theMINIclassy.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly UserManager<ApplicationUser> _userManger;
 
         private IHostingEnvironment _environment;
 
-        public ProductsController(ApplicationDbContext context, IHostingEnvironment environment)
+        public ProductsController(ApplicationDbContext context, IHostingEnvironment environment, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _environment = environment;
+            _userManger = userManager;
         }
         [Authorize]
         // GET: Products
@@ -105,6 +111,7 @@ namespace theMINIclassy.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
+            
             ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Title");
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title");
             ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Title");
@@ -137,12 +144,15 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product, int FabricsQuantity, ICollection<IFormFile> files)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             product.Quantity = 0;
             if (ModelState.IsValid)
             {
                 _context.Add(product);
                 var uploads = Path.Combine(_environment.WebRootPath, "uploads");
                 var images = Path.Combine(_environment.WebRootPath, "images");
+                var imageName = "";
+                var fileName = "";
                 int count = 0;
                 foreach (var file in files)
                 {
@@ -155,7 +165,8 @@ namespace theMINIclassy.Controllers
                             {
                                 await file.CopyToAsync(fileStream);
                             }
-                            uploads += "\\" + file.FileName;
+                            //uploads += "\\" + file.FileName;
+                            fileName = "\\uploads\\" + file.FileName;
                             count++;
                         }
                         else
@@ -164,14 +175,17 @@ namespace theMINIclassy.Controllers
                             {
                                 await file.CopyToAsync(fileStream);
                             }
-                            images += "\\" + file.FileName;
+                            //images += "\\" + file.FileName;
+                            imageName = "\\uploads\\"+file.FileName;
                         }
                     }
                 }
 
-                product.TechPackPath = uploads;
-                product.ImagePath = images;
+                product.TechPackPath = fileName;
+                //product.ImagePath = images;
+                product.ImagePath = imageName;
                 await _context.SaveChangesAsync();
+                logger.Info(user + " created " + product.Title);
                 int saveId = product.Id;
                 return RedirectToAction("Details","Products", new { id = product.Id });
             }
@@ -207,6 +221,7 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CollectionId,Description,ImagePath,MinThreshold,Quantity,SKU,StyleId,TechPackPath,Title,VariationId")] Product product)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             if (id != product.Id)
             {
                 return NotFound();
@@ -218,6 +233,7 @@ namespace theMINIclassy.Controllers
                 {
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+                    logger.Info(user + " edited " + product.Title);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -246,6 +262,7 @@ namespace theMINIclassy.Controllers
             }
 
             var product = await _context.Product.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info("Current quantity of " + product.Title + " is " + product.Quantity);
             if (product == null)
             {
                 return NotFound();
@@ -273,7 +290,7 @@ namespace theMINIclassy.Controllers
             Dictionary<int, decimal> tagDict = new Dictionary<int, decimal>();
             //Exception Dictionary hold key: conflicting object's title && value: saying problem
             Dictionary<string, string> exceptionDict = new Dictionary<string, string>();
-
+            var user = _userManger.GetUserName(HttpContext.User);
             var oldProduct = new Product();
             foreach (var item in _context.Product)
             {
@@ -410,6 +427,7 @@ namespace theMINIclassy.Controllers
                         oldProduct.Quantity = product.Quantity;
                         _context.Update(oldProduct);
                         await _context.SaveChangesAsync();
+                        logger.Info(user + " edited " + product.Title + " to " + product.Quantity);
                         //actions dictionary: key: title && value:action
                         Dictionary<string, string> actionDict = new Dictionary<string, string>();
                         actionDict.Add(oldProduct.Title, "Product quantity has been updated to " + oldProduct.Quantity);
@@ -628,7 +646,9 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var user = _userManger.GetUserName(HttpContext.User);
             var product = await _context.Product.SingleOrDefaultAsync(m => m.Id == id);
+            logger.Info(user + " deleted " + product.Title);
             _context.Product.Remove(product);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");

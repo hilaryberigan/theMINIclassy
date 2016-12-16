@@ -21,6 +21,7 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Product.ImagePath)
+            <img src="@Model.Product.ImagePath" width="300" />
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Product.MinThreshold)
@@ -45,6 +46,10 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Product.TechPackPath)
+            
+                <img src="@Model.Product.TechPackPath" width="300"/>
+
+            
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Product.Title)

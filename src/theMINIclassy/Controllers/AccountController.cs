@@ -69,9 +69,10 @@ namespace theMINIclassy.Controllers
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                    var user = _userManager.GetUserName(HttpContext.User);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation(1, "User logged in.");
+                    _logger.LogInformation(1, user + " logged in.");
                     return RedirectToLocal(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -80,7 +81,7 @@ namespace theMINIclassy.Controllers
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning(2, "User account locked out.");
+                    _logger.LogWarning(2, user + " account locked out.");
                     return View("Lockout");
                 }
                 else
@@ -128,6 +129,7 @@ namespace theMINIclassy.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
+
                 var manager = _context.Roles.Where(m => m.Name == "Manager").FirstOrDefault();
                 var employee = _context.Roles.Where(m => m.Name == "Employee").FirstOrDefault();
 
@@ -167,8 +169,9 @@ namespace theMINIclassy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()
         {
+            var user = _userManager.GetUserName(HttpContext.User);
             await _signInManager.SignOutAsync();
-            _logger.LogInformation(4, "User logged out.");
+            _logger.LogInformation(4, user + " logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
