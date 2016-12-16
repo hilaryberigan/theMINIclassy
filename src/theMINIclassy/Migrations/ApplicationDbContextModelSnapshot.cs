@@ -286,6 +286,22 @@ namespace theMINIclassy.Migrations
                     b.ToTable("Fabric");
                 });
 
+            modelBuilder.Entity("theMINIclassy.Models.ImagePath", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FilePath");
+
+                    b.Property<int?>("ProductId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ImagePath");
+                });
+
             modelBuilder.Entity("theMINIclassy.Models.Label", b =>
                 {
                     b.Property<int>("Id")
@@ -662,6 +678,13 @@ namespace theMINIclassy.Migrations
                         .WithMany()
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("theMINIclassy.Models.ImagePath", b =>
+                {
+                    b.HasOne("theMINIclassy.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("theMINIclassy.Models.Order", b =>
