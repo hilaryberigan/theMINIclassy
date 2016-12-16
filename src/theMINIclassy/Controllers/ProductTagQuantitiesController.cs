@@ -198,7 +198,7 @@ namespace theMINIclassy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Products", new { id = productTagQuantity.ProductId });
             }
             ViewData["ProductId"] = new SelectList(_context.Product, "Id", "Id", productTagQuantity.ProductId);
             ViewData["TagId"] = new SelectList(_context.Tag, "Id", "Id", productTagQuantity.TagId);
