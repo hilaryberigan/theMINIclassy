@@ -54,10 +54,14 @@ namespace theMINIclassy.Controllers
         public IActionResult Create(int? Id)
         {
 
-            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title");
-            ViewData["PatPieceId"] = Id;
+            ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Title");
+            PatPieceStyle model = new PatPieceStyle
+            {
+                StyleId = Id ?? default(int),
+            };
             
-            return View();
+            
+            return View(model);
         }
 
         //public IActionResult AddAnother(int Id)
@@ -77,7 +81,6 @@ namespace theMINIclassy.Controllers
         public async Task<IActionResult> Create([Bind("Id,PatPieceId,StyleId")] PatPieceStyle patPieceStyle)
         {
             var user = _userManger.GetUserName(HttpContext.User);
-            patPieceStyle.PatPieceId = patPieceStyle.Id;
             patPieceStyle.Id = 0;
             if (ModelState.IsValid)
             {
@@ -85,6 +88,7 @@ namespace theMINIclassy.Controllers
                 await _context.SaveChangesAsync();
                 var styleName = "";
                 var patternName = "";
+
                 foreach(var item in _context.Style)
                 {
                     if(item.Id == patPieceStyle.StyleId)
@@ -99,8 +103,9 @@ namespace theMINIclassy.Controllers
                         patternName = item.Title;
                     }
                 }
-                logger.Info(user + " created " + styleName + " and " + patternName);
-                return RedirectToAction("Details","PatternPieces", new { id = patPieceStyle.PatPieceId });
+                logger.Info(user + " added " + patternName + " to " + styleName );
+
+                return RedirectToAction("Details", "Styles", new { id = patPieceStyle.StyleId });
             }
             ViewData["PatPieceId"] = new SelectList(_context.PatternPiece, "Id", "Id", patPieceStyle.PatPieceId);
             ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", patPieceStyle.StyleId);

@@ -8,18 +8,14 @@
 
 <form asp-action="Create">
     <div class="form-horizontal">
-        <h4>PatPieceStyle</h4>
+        <h4>Add Pattern Piece to Style</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group" hidden>
-            <div class="col-md-10">
-                <input type="hidden" name="PatternPieceId" class="form-control" value="PatternPieceId" />
-            </div>
-        </div>
+        @Html.HiddenFor(model=>model.StyleId)
         <div class="form-group">
-            <label asp-for="StyleId" class="col-md-2 control-label"></label>
+            <label asp-for="PatPieceId" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <select asp-for="StyleId" class ="form-control" asp-items="ViewBag.StyleId"></select>
+                <select asp-for="PatPieceId" class ="form-control" asp-items="ViewBag.PatPieceId"></select>
             </div>
         </div>
         <div class="form-group">

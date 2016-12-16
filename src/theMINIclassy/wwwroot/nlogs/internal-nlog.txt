@@ -8,3 +8,13 @@
    at NLog.Targets.FileTarget.WriteToFile(String fileName, LogEventInfo logEvent, Byte[] bytes, Boolean justData)
    at NLog.Targets.FileTarget.ProcessLogEvent(LogEventInfo logEvent, String fileName, Byte[] bytesToWrite)
    at NLog.Targets.Target.Write(AsyncLogEventInfo logEvent)
+2016-12-15 15:06:55.4259 Error Error has been raised. Exception: System.IO.IOException: The process cannot access the file 'C:\Users\berig\OneDrive\Projects\theMINIclassy\src\theMINIclassy\wwwroot\nlogs\nlog-all-2016-12-15.log' because it is being used by another process.
+   at System.IO.Win32FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, FileStream parent)
+   at System.IO.Win32FileSystem.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, FileStream parent)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at NLog.Internal.FileAppenders.BaseFileAppender.TryCreateFileStream(Boolean allowFileSharedWriting)
+   at NLog.Internal.FileAppenders.BaseFileAppender.CreateFileStream(Boolean allowFileSharedWriting)
+   at NLog.Internal.FileAppenders.RetryingMultiProcessFileAppender.Write(Byte[] bytes)
+   at NLog.Targets.FileTarget.WriteToFile(String fileName, LogEventInfo logEvent, Byte[] bytes, Boolean justData)
+   at NLog.Targets.FileTarget.ProcessLogEvent(LogEventInfo logEvent, String fileName, Byte[] bytesToWrite)
+   at NLog.Targets.Target.Write(AsyncLogEventInfo logEvent)
