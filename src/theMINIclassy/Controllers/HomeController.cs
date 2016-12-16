@@ -105,7 +105,7 @@ namespace theMINIclassy.Controllers
 
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Title_desc" : "";
             ViewData["TypeSortParm"] = sortOrder == "Type" ? "Type_desc" : "Type";
-            ViewData["QuantSortParm"] = sortOrder == "Quantity" ? "Quant_desc" : "Type";
+            ViewData["QuantSortParm"] = sortOrder == "Quantity" ? "Quant_desc" : "Quantity";
             switch (sortOrder)
             {
                 case "Type":
