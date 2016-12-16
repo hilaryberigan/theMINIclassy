@@ -132,10 +132,13 @@
 <br />
 <br />
 <div>
+    @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+    { 
     <a asp-controller="ProductFabricQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h5>ADD FABRIC & QUANTITY</h5></a>
     <a asp-controller="ProductNotionQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h5>ADD NOTION & QUANTITY</h5></a>
     <a asp-controller="ProductLabelQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h5>ADD LABEL & QUANTITY</h5></a>
     <a asp-controller="ProductTagQuantities" asp-action="Create" asp-route-id="@Model.Product.Id"><h5>ADD TAG & QUANTITY</h5></a>
+    }
 </div>
 <div>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))

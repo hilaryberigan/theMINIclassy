@@ -46,6 +46,7 @@ namespace theMINIclassy.Data
         public DbSet<Style> Style { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<Variation> Variation { get; set; }
+        public DbSet<ImagePath> ImagePath { get; set; }
 
 
 
