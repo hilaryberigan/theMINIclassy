@@ -17,5 +17,11 @@ namespace theMINIclassy.Models.ManageViewModels
 
         public List<PatPieceVariation> PatPieceVariations { get; set; }
 
+        public List<PatternPiece> PatPieces { get; set; }
+
+        public Style Style { get; set; }
+
+        public Variation Variation { get; set; }
+
     }
 }

@@ -547,7 +547,7 @@ namespace theMINIclassy.Controllers
             {
                 if(item.Id == prodId)
                 {
-                    tempProd = item;
+                    tempProd = item; 
                 }
             }
             var model = new ExceptionViewModel

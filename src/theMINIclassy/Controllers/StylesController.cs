@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using theMINIclassy.Models.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -46,7 +47,24 @@ namespace theMINIclassy.Controllers
                 return NotFound();
             }
 
-            return View(style);
+            List<PatternPiece> AllPatPieces = new List<PatternPiece>();
+            foreach (var item in _context.PatternPiece)
+            {
+                AllPatPieces.Add(item);
+            }
+            List<PatPieceStyle> PPSwithThisStyle = new List<PatPieceStyle>();
+            foreach (var item in _context.PatPieceStyle.Where(x=>x.StyleId == style.Id).ToList())
+            {
+                PPSwithThisStyle.Add(item);
+            }
+            var model = new PatPieceViewModel
+            {
+                Style = style,
+                PatPieces = AllPatPieces,
+                PatPieceStyles = PPSwithThisStyle,
+            };
+ 
+            return View(model);
         }
         [Authorize]
         // GET: Styles/Create
@@ -82,7 +100,8 @@ namespace theMINIclassy.Controllers
                 await _context.SaveChangesAsync();
                 var user = _userManger.GetUserName(HttpContext.User);
                 logger.Info(user + " created " + style.Title);
-                return RedirectToAction("Index");
+
+                return RedirectToAction("Details", new { Id = style.Id });
             }
             return View(style);
 

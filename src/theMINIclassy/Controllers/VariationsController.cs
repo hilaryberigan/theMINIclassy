@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using theMINIclassy.Data;
 using theMINIclassy.Models;
+using theMINIclassy.Models.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -45,8 +46,24 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
+            List<PatternPiece> AllPatPieces = new List<PatternPiece>();
+            foreach(var item in _context.PatternPiece)
+            {
+                AllPatPieces.Add(item);
+            }
+            List<PatPieceVariation> PPVwithThisVariation = new List<PatPieceVariation>();
+            foreach (var item in _context.PatPieceVariation.Where(x=>x.VariationId == variation.Id).ToList())
+            {
+                PPVwithThisVariation.Add(item);
+            }
+            var model = new PatPieceViewModel
+            {
+                Variation = variation,
+                PatPieces = AllPatPieces,
+                PatPieceVariations = PPVwithThisVariation,
+            };
 
-            return View(variation);
+                return View(model);
         }
         [Authorize]
         // GET: Variations/Create
@@ -68,7 +85,8 @@ namespace theMINIclassy.Controllers
                 await _context.SaveChangesAsync();
                 var user = _userManger.GetUserName(HttpContext.User);
                 logger.Info(user + " created " + variation.Title);
-                return RedirectToAction("Index");
+
+                return RedirectToAction("Details", new { id = variation.Id });
             }
             return View(variation);
         }
