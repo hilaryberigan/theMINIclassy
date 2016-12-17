@@ -42,7 +42,7 @@ function readLogs(show) {
     document.getElementById(show).style.display = '';
     document.getElementById(show).style.visibility = '';
     document.getElementById(show).style.position = 'absolute';
-    document.getElementById(show).style.top = '130px';
+    document.getElementById(show).style.top = '200px';
     [].forEach.call(document.querySelectorAll('.fileButtons'), function (el) {
         el.style.visibility = 'hidden';
     });
