@@ -25,12 +25,10 @@ function GetTitle(id, list) {
     return id;
 }
 function startLogPage() {
-    alert("page started");
     document.getElementById('logFileName').style.display = '';
     document.getElementById('showLog').style.display = 'none';
 }
 function readLogs() {
-    alert("readLogs");
     document.getElementById('logFileName').style.display = 'none';
     document.getElementById('showLog').style.display = '';
 }
