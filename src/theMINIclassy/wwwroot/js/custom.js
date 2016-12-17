@@ -26,10 +26,25 @@ function GetTitle(id, list) {
 }
 function startLogPage() {
     document.getElementById('logFileName').style.display = '';
-    document.getElementById('showLog').style.display = 'none';
+    [].forEach.call(document.querySelectorAll('.showContent'), function (el) {
+        el.style.visibility = 'hidden';
+    });
+    //document.getElementById('showContent').style.display = 'none';
+
+    //document.getElementsByClassName('fileContent').style.display = 'none';
 }
-function readLogs() {
+function hideElement(hide) {
+    alert("hiding " + hide);
+    document.getElementById(hide).style.display = 'none';
+}
+function readLogs(show) {
     document.getElementById('logFileName').style.display = 'none';
-    document.getElementById('showLog').style.display = '';
+    document.getElementById(show).style.display = '';
+    document.getElementById(show).style.visibility = '';
+    document.getElementById(show).style.position = 'absolute';
+    document.getElementById(show).style.top = '130px';
+    [].forEach.call(document.querySelectorAll('.fileButtons'), function (el) {
+        el.style.visibility = 'hidden';
+    });
 }
 

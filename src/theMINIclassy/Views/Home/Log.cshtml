@@ -5,25 +5,35 @@
 <body onload="startLogPage()">
     <div>
         <ol>
-            @foreach (var item in Model.LogFileNames.Keys)
-            {
-                if (item.Contains("changes"))
-                {
-                    
-                    <div id="logFileName">
-                        <li><button onclick="readLogs()">@item</button></li>
+            
+                    @foreach (var item in Model.LogFileNames.Keys)
+                    {
+                        if (item.Contains("changes"))
+                        {
+
+
+                    <div id="logFileName" class="fileButtons">
+                        <li><button onclick="readLogs('@item')">@item</button></li>
                     </div>
-                    <div id="showLog">
-                        <ul>
-                            @foreach (var x in Model.LogFileNames[item])
-                            {
-                                <li>@x</li>
-                            }
-                        </ul>
-                    </div>
-                }
-            }
+                        }
+                    }
 
         </ol>
+    </div>
+    <div>
+        @foreach (var item in Model.LogFileNames.Keys)
+        {
+            if (item.Contains("changes"))
+            {
+            <div id="@item" class="showContent">
+                <ul>
+                    @foreach (var x in Model.LogFileNames[item])
+                    {
+                        <li>@x</li>
+                    }
+                </ul>
+            </div>
+            }
+        }
     </div>
 </body>
