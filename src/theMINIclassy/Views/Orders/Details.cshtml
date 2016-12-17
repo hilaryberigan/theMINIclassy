@@ -34,26 +34,50 @@
         <dd>
             @Html.DisplayFor(model => model.Order.OriginatedFrom)
         </dd>
-    </dl>
-    @if (Model.PQuantities != null)
-    {
-        <dt>Fabric(s)</dt>
+        @*@if (Model.PQuantities != null)
+        {
+            <dt>Product(s)</dt>
             @foreach (var item in Model.PQuantities)
             {
-                foreach (var x in Model.Products)
+                if (item.ProductId == Model.Product.Id)
                 {
-                    if (x.Id == Model.Order.Id)
-                    { 
-                        <dd>@item.QtyProductOnOrder <strong> of</strong> @x.Title | 
-                    
-                        if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    @foreach (var x in Model.Fabrics)
+                    {
+                        if (x.Id == item.FabricId)
                         {
-                            <a asp-controller="ProductQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-controller="ProductQuantities" asp-action="Delete" asp-route-id="@item.Id"> Delete </a></dd>
+                            <dd>@item.QtyFabricOnProduct <strong>yards of</strong> @x.Title | <a asp-controller="ProductFabricQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductFabricQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
+                        }
                     }
-                  }
                 }
-             }
+            }
+        }*@
+        @if (Model.PQuantities != null)
+        {
+            <dt>Product(s)</dt>
+            @foreach (var item in Model.PQuantities)
+            {
+                if (item.OrderId == Model.Order.Id)
+                {
+                    foreach (var x in Model.Products)
+                    {
+                        if (x.Id == item.ProductId)
+                        {
+                        <dd>
+                            @item.QtyProductOnOrder <strong> of </strong> @x.Title |
+
+                            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {<text>
+                            <a asp-controller="ProductQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-controller="ProductQuantities" asp-action ="Delete" asp-route-id ="@item.Id">Delete</a>
+                                       </text> }
+                        </dd>
+                            }
+                        }
+                    }
+                }
+            }
+    </dl>
+    <br />
     </div>
     <div>
         <a asp-controller="ProductQuantities" asp-action="Create" asp-route-id="@Model.Order.Id"><h5>ADD PRODUCT ITEM & QUANTITY</h5></a>
@@ -63,7 +87,7 @@
 
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.Order.Id">Make Changes </a>
+        <a asp-action="Edit" asp-route-id="@Model.Order.Id">Make Changes | </a>
     }
     <a asp-action="Index">Back to List</a>
 </div>

@@ -1,0 +1,49 @@
+﻿@model theMINIclassy.Models.LogsViewModel
+<br />
+<h2>Logs:</h2>
+<br />
+<div>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Search: @Html.TextBox("SearchLog")
+        <input type="submit" value="Search" />
+    </p>
+}
+</div>
+<body onload="startLogPage()">
+    <div>
+        <ol>
+            
+                    @foreach (var item in Model.LogFileList)
+                    {
+                        if (item.Contains("changes"))
+                        {
+
+
+                    <div id="logFileName" class="fileButtons">
+                        <li><button onclick="readLogs('@item')">@item</button></li>
+                    </div>
+                        }
+                    }
+
+        </ol>
+    </div>
+    <div>
+        @foreach (var item in Model.LogFileList)
+        {
+            if (item.Contains("changes"))
+            {
+            <div id="@item" class="showContent">
+                <ul>
+                    @foreach (var x in Model.LogFileNames[item])
+                    {
+                        <li>@x</li>
+                    }
+                </ul>
+            </div>
+            }
+        }
+    </div>
+</body>

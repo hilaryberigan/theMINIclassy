@@ -6,16 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using theMINIclassy.Models;
 using theMINIclassy.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+
 
 namespace theMINIclassy.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private IHostingEnvironment _environment;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IHostingEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         [Authorize]
         public IActionResult Index()
@@ -41,6 +46,77 @@ namespace theMINIclassy.Controllers
         {
             return View();
         }
+
+        [Authorize]
+        public IActionResult Log(string searchLog)
+        {
+            ViewData["Logs"] = DateTime.UtcNow.Date.ToString();
+            DirectoryInfo d = new DirectoryInfo(_environment.WebRootPath + "\\nlogs");//Assuming Test is your Folder
+            FileInfo[] Files = d.GetFiles("*.log"); //Getting Text files
+            string str = "";
+            List<string> list = new List<string>();
+            List<string> list2 = new List<string>();
+            Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>();
+            foreach (FileInfo file in Files)
+            {
+                //FileStream fileStream = new FileStream("~/nlogs/" + file.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                
+                list2 = new List<string>();
+                string myfile = _environment.WebRootPath + "\\nlogs\\" + file.Name;
+                try
+                {
+                    using (FileStream fileStream = new FileStream(myfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (StreamReader streamReader = new StreamReader(fileStream))
+                        {
+                            while(streamReader.Peek() >= 0)
+                            {
+                                list2.Add(streamReader.ReadLine());
+                            }
+                            //allText = streamReader.ReadToEnd();
+                        }
+                    }
+                }catch{ }
+
+
+
+                str = file.Name;
+                //string path = @"~\nglogs\" + file.Name;
+                //StreamReader sr = new StreamReader(GenerateStreamFromString(path));
+                //var logText = "";
+                //while(sr.Peek() >= 0)
+                //{
+                //    logText += sr.ReadLine() + '@';
+
+                //}
+                dict.Add(str, list2);
+                list.Add(str);
+                //list.Add(Convert.ToString(file));
+            }
+            if (!String.IsNullOrEmpty(searchLog))
+            {
+                var temp = list.Where(s => s != null);
+                list = temp.Where(s => s.ToUpper().Contains(searchLog.ToUpper())).ToList();
+            }
+            var model = new LogsViewModel
+            {
+                LogFileNames = dict,
+                LogFileList = list
+            };
+            return View(model);
+        }
+
+        public Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
+
+       
         [Authorize]
         public IActionResult SupplyInventory(string sortOrder, string searchString)
         {

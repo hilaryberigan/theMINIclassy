@@ -70,23 +70,30 @@ namespace theMINIclassy.Controllers
             {
                 Dictionary<string, string> actionDict = new Dictionary<string, string>();
                 int ID = 0;
-                foreach(var item in _context.Product.ToList())
+                Product newProd = new Product();
+                foreach(var product in _context.Product.ToList())
                 {
-                    if(item.Id == productQuantity.ProductId)
+                    if(product.Id == productQuantity.ProductId)
                     {
-                        int temp = item.Quantity - productQuantity.QtyProductOnOrder;
-                        if(temp > 0)
+                        int temp = product.Quantity - productQuantity.QtyProductOnOrder;
+                        if(temp >= 0)
                         {
-                            item.Quantity = temp;
-                            ID = item.Id;
-                            _context.Add(item);
+                            newProd = product;
+                            newProd.Quantity = temp;
+                            ID = product.Id;
+                            _context.Update(newProd);
                             await _context.SaveChangesAsync();
                             _context.Add(productQuantity);
                             await _context.SaveChangesAsync();
-                            actionDict.Add(item.Title, "Product quantity decreased to " + item.Quantity + "&&");
+                            actionDict.Add(product.Title, "Product quantity decreased to " + product.Quantity + "&&");
+                            
+                            if(newProd.MinThreshold >= newProd.Quantity)
+                            {
+                                actionDict.Add(Convert.ToString(newProd.Id) + " >> " + newProd.Title, "Product has reached or passed minimum threshold of " + newProd.MinThreshold + " and this product's quantity is now at " + newProd.Quantity + "&&");
+                            }
                         }else
                         {
-                            actionDict.Add(item.Title, "Not enough of this product to make order. Product quantity not updated and product not added to order.&&");
+                            actionDict.Add(product.Title, "Not enough of this product to make order. Product quantity not updated and product not added to order.&&");
                         }
                     }
                 }
@@ -104,7 +111,12 @@ namespace theMINIclassy.Controllers
         public IActionResult Result(int id,string actionStr)
         {
             Product tempProd = new Product();
-            string[] tempArray = actionStr.Split(new string[] { "&&" }, StringSplitOptions.None);
+            List<string> tempList = actionStr.Split(new string[] { "&&" }, StringSplitOptions.None).ToList();
+            if(tempList[tempList.Count - 1].Length == 0)
+            {
+                tempList.RemoveAt(tempList.Count - 1);
+            }
+            string[] tempArray = tempList.ToArray();
             foreach (var item in _context.Product.ToList())
             {
                 if(id == item.Id)
@@ -117,7 +129,7 @@ namespace theMINIclassy.Controllers
                 errors = tempArray,
                 Product = tempProd
             };
-            return View();
+            return View(model);
         }
         // GET: ProductQuantities/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -199,7 +211,7 @@ namespace theMINIclassy.Controllers
             var productQuantity = await _context.ProductQuantity.SingleOrDefaultAsync(m => m.Id == id);
             _context.ProductQuantity.Remove(productQuantity);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Orders");
         }
 
         private bool ProductQuantityExists(int id)
