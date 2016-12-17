@@ -1,25 +1,46 @@
 ﻿@model theMINIclassy.Models.LogsViewModel
-<script src="~/js/custom.js"></script>
-<div id="logFileName">
-<ol>
-    @{ 
-        List<SelectListItem> logList = new List<SelectListItem>();
+<br />
+<br />
+<h2>Logs:</h2>
+<br />
+<br />
+<body onload="startLogPage()">
+    <div>
+        <ol>
+            @foreach (var item in Model.LogFileNames.Keys)
+            {
+                if (item.Contains("changes"))
+                {
 
-foreach(var item in Model.LogFileNames.Keys)
-{
-    if (item.Contains("changes"))
-    {
-        logList.Add(new SelectListItem { Text = @item });
-        @*<li><button onclick="readLogs(@item, @Model.LogFileNames[item])">@item</button></li>*@
-        
+                    //var yourJavaScriptArray = @Html.Raw(Json.Serialize(Model.LogFileNames[item]));
+                    <div id="logFileName">
+                        <li><button onclick="readLogs()">@item</button></li>
+                    </div>
+                    <div id="showLog">
+                        <ul>
+                            @foreach (var x in Model.LogFileNames[item])
+                            {
+                                <li>@x</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+
+        </ol>
+    </div>
+</body>
+@*<div id="showLog">
+
+
+</div>*@
+
+@*<script>
+    function readLogs(file) {
+        alert("readLogs inside log.cshtml page");
+        alert(file);
+        document.getElementById('logFileName').style.display = 'none';
+        document.getElementById('showLog').style.display = '';
+
     }
-
-}
-    }
-    @Html.DropDownListFor(model => model.LogFileNames.Keys, logList, "---Select Logs---")
-</ol>
-</div>
-<div id="showLog">
-
-
-</div>
+</script>*@

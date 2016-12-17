@@ -41,7 +41,8 @@ namespace theMINIclassy.Models
     }
     public class LogsViewModel
     {
-        public Dictionary<string, string> LogFileNames { get; set; }
+        public Dictionary<string, List<string>> LogFileNames { get; set; }
+        public List<string> LogFileList { get; set; }
     }
 
 }

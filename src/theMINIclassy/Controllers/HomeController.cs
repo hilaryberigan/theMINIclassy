@@ -54,24 +54,49 @@ namespace theMINIclassy.Controllers
             DirectoryInfo d = new DirectoryInfo(_environment.WebRootPath + "\\nlogs");//Assuming Test is your Folder
             FileInfo[] Files = d.GetFiles("*.log"); //Getting Text files
             string str = "";
-            //List<string> list = new List<string>();
-            Dictionary<string, string> dict = new Dictionary<string, string>();
+            List<string> list = new List<string>();
+            List<string> list2 = new List<string>();
+            Dictionary<string, List<string>> dict = new Dictionary<string, List<string>>();
             foreach (FileInfo file in Files)
             {
-                str = file.Name;
-                StreamReader sr = new StreamReader(GenerateStreamFromString(file.Name));
-                var logText = "";
-                while(sr.Peek() >= 0)
+                //FileStream fileStream = new FileStream("~/nlogs/" + file.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                string allText = "";
+                list2 = new List<string>();
+                string myfile = _environment.WebRootPath + "\\nlogs\\" + file.Name;
+                try
                 {
-                    logText += sr.ReadLine() + '@';
+                    using (FileStream fileStream = new FileStream(myfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (StreamReader streamReader = new StreamReader(fileStream))
+                        {
+                            while(streamReader.Peek() >= 0)
+                            {
+                                list2.Add(streamReader.ReadLine());
+                            }
+                            //allText = streamReader.ReadToEnd();
+                        }
+                    }
+                }catch{ }
 
-                }
-                dict.Add(str, logText);
+
+
+                str = file.Name;
+                //string path = @"~\nglogs\" + file.Name;
+                //StreamReader sr = new StreamReader(GenerateStreamFromString(path));
+                //var logText = "";
+                //while(sr.Peek() >= 0)
+                //{
+                //    logText += sr.ReadLine() + '@';
+
+                //}
+                dict.Add(str, list2);
+                list.Add(str + "&&&&" + allText);
                 //list.Add(Convert.ToString(file));
             }
             var model = new LogsViewModel
             {
-                LogFileNames = dict
+                LogFileNames = dict,
+                LogFileList = list
             };
             return View(model);
         }
