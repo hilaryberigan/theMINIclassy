@@ -49,15 +49,20 @@ namespace theMINIclassy.Controllers
             }
 
             List<ProductQuantity> ProdQuants = new List<ProductQuantity>();
-            foreach (var item in _context.ProductQuantity.Where(x => x.Order.Id == id).ToList())
+            foreach (var item in _context.ProductQuantity)
             {
                 ProdQuants.Add(item);
             }
-
+            List<Product> allProd = new List<Product>();
+            foreach(var item in _context.Product)
+            {
+                allProd.Add(item);
+            }
             var model = new OrderViewModel
             {
                 Order = order,
-                PQuantities = ProdQuants,            
+                PQuantities = ProdQuants, 
+                Products = allProd           
             };
 
             return View(model);
