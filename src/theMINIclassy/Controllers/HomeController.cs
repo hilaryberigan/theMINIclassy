@@ -48,7 +48,7 @@ namespace theMINIclassy.Controllers
         }
 
         [Authorize]
-        public IActionResult Log()
+        public IActionResult Log(string searchLog)
         {
             ViewData["Logs"] = DateTime.UtcNow.Date.ToString();
             DirectoryInfo d = new DirectoryInfo(_environment.WebRootPath + "\\nlogs");//Assuming Test is your Folder
@@ -60,7 +60,7 @@ namespace theMINIclassy.Controllers
             foreach (FileInfo file in Files)
             {
                 //FileStream fileStream = new FileStream("~/nlogs/" + file.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                string allText = "";
+                
                 list2 = new List<string>();
                 string myfile = _environment.WebRootPath + "\\nlogs\\" + file.Name;
                 try
@@ -90,8 +90,13 @@ namespace theMINIclassy.Controllers
 
                 //}
                 dict.Add(str, list2);
-                list.Add(str + "&&&&" + allText);
+                list.Add(str);
                 //list.Add(Convert.ToString(file));
+            }
+            if (!String.IsNullOrEmpty(searchLog))
+            {
+                var temp = list.Where(s => s != null);
+                list = temp.Where(s => s.ToUpper().Contains(searchLog.ToUpper())).ToList();
             }
             var model = new LogsViewModel
             {
@@ -110,6 +115,8 @@ namespace theMINIclassy.Controllers
             stream.Position = 0;
             return stream;
         }
+
+       
         [Authorize]
         public IActionResult SupplyInventory(string sortOrder, string searchString)
         {

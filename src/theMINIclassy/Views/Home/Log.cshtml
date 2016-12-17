@@ -2,11 +2,21 @@
 <br />
 <h2>Logs:</h2>
 <br />
+<div>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Search: @Html.TextBox("SearchLog")
+        <input type="submit" value="Search" />
+    </p>
+}
+</div>
 <body onload="startLogPage()">
     <div>
         <ol>
             
-                    @foreach (var item in Model.LogFileNames.Keys)
+                    @foreach (var item in Model.LogFileList)
                     {
                         if (item.Contains("changes"))
                         {
@@ -21,7 +31,7 @@
         </ol>
     </div>
     <div>
-        @foreach (var item in Model.LogFileNames.Keys)
+        @foreach (var item in Model.LogFileList)
         {
             if (item.Contains("changes"))
             {
