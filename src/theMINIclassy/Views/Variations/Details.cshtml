@@ -44,9 +44,9 @@
 
 
 <div>
-    <a asp-controller="PatPieceVariations" asp-action="Create" asp-route-id="@Model.Variation.Id"><h5>ADD PATTERN PIECE</h5></a>
     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
     {
+        <a asp-controller="PatPieceVariations" asp-action="Create" asp-route-id="@Model.Variation.Id"><h5>ADD PATTERN PIECE</h5></a>
         <a asp-action="Edit" asp-route-id="@Model.Variation.Id">Edit |</a>
     }
     <a asp-action="Index">Back to List</a>

@@ -20,6 +20,7 @@
             @Html.DisplayNameFor(model => model.Product.ImagePath)
         </dt>
         <dd>
+
             <img src="@Model.Product.ImagePath" width="300" />
         </dd>
         <dt>
@@ -44,6 +45,7 @@
             @Html.DisplayNameFor(model => model.Product.TechPackPath)
         </dt>
         <dd>
+
             
                 <img src="@Model.Product.TechPackPath" width="300"/>
 
@@ -66,7 +68,18 @@
                     {
                         if (x.Id == item.FabricId)
                         {
+                            if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+
+
                             <dd>@item.QtyFabricOnProduct <strong>yards of</strong> @x.Title | <a asp-controller="ProductFabricQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductFabricQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
+                            }
+                            else
+                            {
+                                <dd>@item.QtyFabricOnProduct <strong>yards of</strong> @x.Title </dd>
+
+
+                            }
                         }
                     }
                 }
@@ -83,15 +96,26 @@
                     {
                         if (x.Id == item.NotionId)
                         {
+                            if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+
+
                             <dd>@item.QtyNotionOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductNotionQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductNotionQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
-                        }
-                    }
-                }
-            }
-        }
-        @if (Model.PLQuantities != null)
-        {
-            <dt>Label(s)</dt>
+                            }
+                            else
+                            {
+                                <dd>
+                                    @item.QtyNotionOnProduct <strong>of</strong> @x.Title</dd>
+
+                                    }
+                                    }
+                                    }
+                                    }
+                                    }
+                                    }
+                                    @if (Model.PLQuantities != null)
+                                    {
+<dt>Label(s)</dt>
             @foreach (var item in Model.PLQuantities)
             {
                 if (item.ProductId == Model.Product.Id)
@@ -101,15 +125,26 @@
                     {
                         if (x.Id == item.LabelId)
                         {
+
+                            if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+
                             <dd>@item.QtyLabelOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductLabelQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductLabelQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
-                        }
-                    }
-                }
-            }
-        }
-        @if (Model.PTQuantities != null)
-        {
-            <dt>Tag(s)</dt>
+                            }
+                            else
+                            {
+                                <dd>
+                                    @item.QtyLabelOnProduct <strong>of</strong> @x.Title</dd>
+
+                                    }
+                                    }
+                                    }
+                                    }
+                                    }
+                                    }
+                                    @if (Model.PTQuantities != null)
+                                    {
+<dt>Tag(s)</dt>
             @foreach (var item in Model.PTQuantities)
             {
                 if (item.ProductId == Model.Product.Id)
@@ -118,13 +153,23 @@
                     {
                         if (x.Id == item.TagId)
                         {
+
+                            if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                            {
+
                             <dd>@item.QtyTagOnProduct <strong>of</strong> @x.Title | <a asp-controller="ProductTagQuantities" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | <a asp-controller="ProductTagQuantities" asp-action="Delete" asp-route-id="@item.Id">Delete</a></dd>
+                            }
+                            else
+                            {
+        <dd>
+            @item.QtyTagOnProduct <strong>of</strong> @x.Title </dd>
+                            }
                         }
                     }
                 }
             }
-        }
-    </dl>
+                                    }
+</dl>
 </div>
 <br />
 <br />
