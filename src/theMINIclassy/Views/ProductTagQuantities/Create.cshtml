@@ -17,16 +17,16 @@
             </div>
         </div>
         <div class="form-group">
+            <label asp-for="TagId" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <select asp-for="TagId" class ="form-control" asp-items="ViewBag.TagId"></select>
+            </div>
+        </div>
+        <div class="form-group">
             <label asp-for="QtyTagOnProduct" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="QtyTagOnProduct" class="form-control" />
                 <span asp-validation-for="QtyTagOnProduct" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="TagId" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <select asp-for="TagId" class ="form-control" asp-items="ViewBag.TagId"></select>
             </div>
         </div>
         <div class="form-group">
