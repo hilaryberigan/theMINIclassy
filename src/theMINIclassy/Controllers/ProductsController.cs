@@ -160,23 +160,24 @@ namespace theMINIclassy.Controllers
                     {
                         if (count == 0)
                         {
+                            using (var fileStream = new FileStream(Path.Combine(images, file.FileName), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
+                            //images += "\\" + file.FileName;
+                            imageName = "\\uploads\\" + file.FileName;
 
+                            count++;
+                        }
+                        else
+                        {
                             using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
                             {
                                 await file.CopyToAsync(fileStream);
                             }
                             //uploads += "\\" + file.FileName;
                             fileName = "\\uploads\\" + file.FileName;
-                            count++;
-                        }
-                        else
-                        {
-                            using (var fileStream = new FileStream(Path.Combine(images, file.FileName), FileMode.Create))
-                            {
-                                await file.CopyToAsync(fileStream);
-                            }
-                            //images += "\\" + file.FileName;
-                            imageName = "\\uploads\\"+file.FileName;
+                            
                         }
                     }
                 }
