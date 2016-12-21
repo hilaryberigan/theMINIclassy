@@ -26,7 +26,7 @@
                 <span asp-validation-for="Product.Description" class="text-danger" />
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" hidden>
             <label asp-for="Product.ImagePath" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="Product.ImagePath" class="form-control" />
@@ -61,7 +61,7 @@
                 <span asp-validation-for="Product.StyleId" class="text-danger" />
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" hidden>
             <label asp-for="Product.TechPackPath" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="Product.TechPackPath" class="form-control" />
