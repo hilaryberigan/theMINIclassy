@@ -51,7 +51,7 @@ namespace theMINIclassy.Controllers
         public IActionResult Log(string searchLog)
         {
             ViewData["Logs"] = DateTime.UtcNow.Date.ToString();
-            DirectoryInfo d = new DirectoryInfo(_environment.WebRootPath + "\\nlogs");//Assuming Test is your Folder
+            DirectoryInfo d = new DirectoryInfo(_environment.WebRootPath + "//nlogs");//Assuming Test is your Folder
             FileInfo[] Files = d.GetFiles("*.log"); //Getting Text files
             string str = "";
             List<string> list = new List<string>();
@@ -62,7 +62,7 @@ namespace theMINIclassy.Controllers
                 //FileStream fileStream = new FileStream("~/nlogs/" + file.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 
                 list2 = new List<string>();
-                string myfile = _environment.WebRootPath + "\\nlogs\\" + file.Name;
+                string myfile = _environment.WebRootPath + "//nlogs//" + file.Name;
                 try
                 {
                     using (FileStream fileStream = new FileStream(myfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
