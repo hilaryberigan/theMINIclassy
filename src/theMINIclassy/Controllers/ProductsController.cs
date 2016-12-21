@@ -208,10 +208,14 @@ namespace theMINIclassy.Controllers
             {
                 return NotFound();
             }
-            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Id", product.CollectionId);
-            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Id", product.StyleId);
-            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Id", product.VariationId);
-            return View(product);
+            ViewData["CollectionId"] = new SelectList(_context.Collection, "Id", "Title", product.CollectionId);
+            ViewData["StyleId"] = new SelectList(_context.Style, "Id", "Title", product.StyleId);
+            ViewData["VariationId"] = new SelectList(_context.Variation, "Id", "Title", product.VariationId);
+            var model = new ProductViewModel
+            {
+                Product = product
+            };
+            return View(model);
         }
         [Authorize]
         // POST: Products/Edit/5
