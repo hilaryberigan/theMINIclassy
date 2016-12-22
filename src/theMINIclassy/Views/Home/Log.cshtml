@@ -55,3 +55,22 @@
 
 
 </body>
+<script>
+    function startLogPage() {
+        document.getElementById('logFileName').style.display = '';
+        [].forEach.call(document.querySelectorAll('.showContent'), function (el) {
+            el.style.visibility = 'hidden';
+        });
+    }
+
+    function readLogs(show) {
+        document.getElementById('logFileName').style.display = 'none';
+        document.getElementById(show).style.display = '';
+        document.getElementById(show).style.visibility = '';
+        document.getElementById(show).style.position = 'absolute';
+        document.getElementById(show).style.top = '200px';
+        [].forEach.call(document.querySelectorAll('.fileButtons'), function (el) {
+            el.style.visibility = 'hidden';
+        });
+    }
+</script>
